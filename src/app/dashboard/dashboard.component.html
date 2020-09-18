@@ -1,0 +1,269 @@
+<ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="default" type="ball-spin-clockwise">
+    <p style="color: white !important">Please Wait. </p>
+</ngx-spinner>
+<nav class="navbar navbar-expand-sm bg-nav navbar-dark mb-5 sticky-top p-3">
+    <div class="container-fluid">
+        <a class=" navbar-brand font-weight-bold">Eseal</a>
+        <div class="ml-auto">
+            <div class="dropdown">
+                <span class="text-uppercase profile">{{profile}}</span>
+                <div class="dropdown-content">
+                    <a>{{profileName}}</a>
+                    <a (click)="logout()"><i class="fa fa-power-off pr-2" aria-hidden="true"></i> Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+<div *ngIf="!admin">
+    <div class="container mb-5">
+        <h2 class="text-center">Welcome to Server Monitoring</h2>
+        <p class="text-center mb-5">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
+            Ipsum
+            has been the
+            industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and
+            scrambled it to make a type specimen book.</p>
+        <div class="row justify-content-center">
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4 class=" text-center">Task List</h4>
+                            </div>
+
+                        </div>
+                        <table class="table table-hover table-responsive mb-0 p-5">
+                            <thead>
+                                <tr>
+                                    <th scope="row">#</th>
+                                    <th class="th-lg w-100">Task Name</th>
+                                    <th class="th-lg">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let row of taskAssign let i = index">
+                                    <td class="pt-3">{{i+1}}</td>
+                                    <td class="text-capitalize pt-3">
+                                        {{row.taskName}}</td>
+                                    <td><button class="btn btn-primary text-capitalize" data-toggle="modal"
+                                            (click)="assign(row)" data-target="#assignTask">Start</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="p-3 text-center fs-18" *ngIf="taskAssign.length == 0">No data found!</p>
+                        <!-- *************************************************** Pagination *************************************************************-->
+                        <!-- <div class="container mt-2 text-center">
+                            <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="admin">
+    <div class="container content-center">
+        <h2 class="text-center">Welcome to Server Monitoring</h2>
+        <p class="text-center">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
+            has been the
+            industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and
+            scrambled it to make a type specimen book.</p>
+        <div class="row mt-5">
+            <div class="col-md-4 mb-3">
+                <div class="card p-4 text-center ">
+                    <span class="material-icons pb-3">
+                        person_add
+                    </span>
+                    <h4 class="pb-2">User Management</h4>
+                    <button class="btn btn-primary m-auto w-50" (click)="manageTaskUser()">Manage</button>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card p-4 text-center ">
+                    <span class="material-icons  pb-3">
+                        add_task
+                    </span>
+                    <h4 class="pb-2">Create Task</h4>
+                    <button class="btn btn-primary m-auto w-50" data-toggle="modal"
+                        data-target="#exampleModal">Create</button>
+
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card p-4 text-center ">
+                    <span class="material-icons pb-3">
+                        playlist_add_check
+                    </span>
+                    <h4 class="pb-2">Manage Task</h4>
+                    <button class="btn btn-primary  m-auto w-50" (click)=" manageTask()">Manage</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ************************************************Modal for create task**************************************************************** -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content modal-width">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Create Task</h5>
+                <button type="button" class="close  text-black-50" data-dismiss="modal" (click)="resetTask()"
+                    aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="createTaskForm" #createTaskForm="ngForm" class="p-4">
+                    <div class="form-group row">
+                        <label for="inputEmail" class="col-sm-3 col-form-label">Task Name</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="inputEmail" name="task" [(ngModel)]="taskName"
+                                #taskname="ngModel" placeholder="Enter Task Name" required>
+                            <span *ngIf="taskname.invalid && (taskname.dirty || taskname.touched)">
+                                <p class="text-danger pt-1" *ngIf="taskname.errors.required">
+                                    Task name is required.
+                                </p>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputPassword" class="col-sm-3 col-form-label">Task Details</label>
+                        <div class="col-sm-9">
+                            <textarea class="form-control" placeholder="Enter Task Details" name="taskDetail"
+                                [(ngModel)]="taskDetail" #taskdetail="ngModel" required></textarea>
+                            <span *ngIf="taskdetail.invalid && (taskdetail.dirty || taskdetail.touched)">
+                                <p class="text-danger pt-1" *ngIf="taskdetail.errors.required">
+                                    Task detail is required.
+                                </p>
+                            </span></div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-10 offset-sm-3">
+                            <button type="button" class="btn btn-primary" [disabled]="!createTaskForm.valid"
+                                (click)="createTask()">Create
+                                Task</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ************************************************Modal for create user**************************************************************** -->
+<ng-template #template>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Create User</h4>
+        <button type="button" class="close pull-right  text-black-50" aria-label="Close"
+            (click)="modalRef.hide();resetUser()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form id="createUserForm" #createUserForm="ngForm">
+            <div class="form-group" data-validate="Enter Name">
+                <input type="text" name="name" [(ngModel)]="name" class="form-control w-75 m-auto" placeholder="Name"
+                    (keyup)=" animate()" autocomplete="new-password" #names="ngModel" required>
+            </div>
+            <span *ngIf="names.invalid && (names.dirty || names.touched)">
+                <p class="text-danger ml-2 pl-5" *ngIf="names.errors.required">
+                    Name is required.
+                </p>
+            </span>
+            <div class="form-group" data-validate="Enter username">
+                <input type="text" name="userName" [(ngModel)]="userName" (keyup)=" animate()" placeholder="Username"
+                    pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,4}$" class="form-control w-75 m-auto"
+                    autocomplete="new-password" #email="ngModel" required>
+            </div>
+            <span *ngIf="email.errors && (email.invalid && email.touched)">
+                <p class="text-danger ml-2 pl-5" *ngIf="email.errors.required">Email is
+                    required.</p>
+                <p class="text-danger ml-2 pl-5" *ngIf="email.errors.pattern">Please enter valid
+                    email.</p>
+            </span>
+            <div class="form-group" data-validate="Enter password">
+                <input type="password" name="pass" [(ngModel)]="password" class="form-control w-75 m-auto"
+                    placeholder="Password" (keyup)=" animate()" autocomplete="new-password" #pass="ngModel"
+                    minlength="6" required>
+            </div>
+
+            <span *ngIf="pass.invalid && (pass.dirty || pass.touched)">
+                <p class="text-danger ml-2 pl-5" *ngIf="pass.errors.required">
+                    Password is required.
+                </p>
+                <p class="text-danger ml-2 pl-5" *ngIf="pass.errors?.minlength">
+                    Password must be greater than 6 characters long.
+                </p>
+            </span>
+            <div class="text-center mb-4">
+                <button class="btn btn-primary w-25" type="button" [disabled]="!createUserForm.valid"
+                    (click)="createUser()">
+                    Create
+                </button>
+            </div>
+        </form>
+    </div>
+</ng-template>
+
+<!-- ************************************************Modal for Assigned task**************************************************************** -->
+<div class="modal fade" id="assignTask" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content modal-width">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Assigned Task</h5>
+                <button type="button" class="close  text-black-50" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="createTaskForm" #createTaskForm="ngForm" class="p-4">
+                    <div class="form-group row">
+                        <label for="inputEmail" class="col-sm-3 col-form-label">Task Name:</label>
+                        <div class="col-sm-9">
+                            <label for="" class="text-capitalize pt-2">{{assigned.taskName}}</label>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputPassword" class="col-sm-3 col-form-label">Task Details:</label>
+                        <div class="col-sm-9">
+                            <label for="" class="text-capitalize pt-2">{{assigned.taskDetail}}</label>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputPassword" class="col-sm-3 col-form-label">From Date</label>
+                        <div class="col-sm-9">
+                            <label for="" class="text-capitalize pt-2">{{assigned.from_date}}</label>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputPassword" class="col-sm-3 col-form-label">To Date</label>
+                        <div class="col-sm-9">
+                            <label for="" class="text-capitalize pt-2">{{assigned.to_date}}</label>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputPassword" class="col-sm-3 col-form-label">Status</label>
+                        <div class="col-sm-5">
+                            <ng-multiselect-dropdown [placeholder]="'Select Status'" [settings]="dropdownSettings"
+                                [data]="dropdownList" name="selectedItems" [(ngModel)]="selectedItems"
+                                (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)"
+                                [disabled]="assigned.status == 'Complete'" required>
+                            </ng-multiselect-dropdown>
+
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-9 offset-sm-3">
+                            <button type="button" class="btn btn-primary" [disabled]="!isDone"
+                                (click)="getStatus(assigned)">Done
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,58 @@
+<ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="default" type="ball-spin-clockwise">
+    <p style="color: white !important">Please Wait. </p>
+</ngx-spinner>
+<nav class="navbar navbar-expand-sm bg-nav navbar-dark mb-5 sticky-top p-3">
+    <div class="container-fluid">
+        <a class=" navbar-brand font-weight-bold">Eseal</a>
+        <div class="ml-auto">
+            <div class="dropdown">
+                <span class="text-uppercase profile">{{profile}}</span>
+                <div class="dropdown-content">
+                    <a>{{profileName}}</a>
+                    <a (click)="logout()"><i class="fa fa-power-off pr-2" aria-hidden="true"></i> Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row pl-5 pr-5 pt-5">
+                        <div class="col-md-12">
+                            <h4 class="text-center">Task List</h4>
+                        </div>
+                    </div>
+                    <table class="table table-hover table-responsive mb-0 p-5">
+                        <thead>
+                            <tr>
+                                <th scope="row">#</th>
+                                <th class="th-lg w-25">Task Name</th>
+                                <th class="th-lg  w-25">Assignee</th>
+                                <th class="th-lg  w-25 ">From Date</th>
+                                <th class="  w-25">To Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                *ngFor="let row of completed | paginate: { itemsPerPage: 10, currentPage: p } let i = index">
+                                <td class="pt-3">{{i+1}}</td>
+                                <td class="text-capitalize pt-3">{{row.taskName}}</td>
+                                <td class="text-capitalize pt-3">{{row.username}}</td>
+                                <td class="text-capitalize pt-3">{{row.from_date}}</td>
+                                <td class="text-capitalize pt-3">{{row.to_date}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p class="p-3 text-center fs-18" *ngIf="completed.length == 0">No data found!</p>
+                    <!-- *************************************************** Pagination *************************************************************-->
+                    <div class="container mt-2 text-center">
+                        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

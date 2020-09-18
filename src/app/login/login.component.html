@@ -1,0 +1,49 @@
+<ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="default" type="ball-spin-clockwise">
+    <p style="color: white !important">Please Wait. </p>
+</ngx-spinner>
+<div class="limiter">
+    <div class="container-login100">
+        <div class="wrap-login100">
+            <form class="login100-form validate-form" #createUserForm="ngForm" id="login">
+                <span class="login100-form-title p-b-43 mb-5">
+                    Login
+                </span>
+                <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
+                    <input class="input100" type="text" name="userName" [(ngModel)]="userName" (keyup)=" animate()"
+                        pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,4}$" autocomplete="new-password"
+                        #email="ngModel" required>
+                    <span class="focus-input100" data-placeholder="Username"></span>
+                    <span class="label-input100">Email</span>
+                </div>
+                <span *ngIf="email.errors && (email.invalid && email.touched)">
+                    <p class="text-danger pb-2" *ngIf="email.errors.required">Email is
+                        required.</p>
+                    <p class="text-danger  pb-2" *ngIf="email.errors.pattern">Please enter valid
+                        email.</p>
+                </span>
+                <div class="wrap-input100 validate-input mt-4" data-validate="Password is required">
+                    <input class="input100" type="password" name="pass" [(ngModel)]="password" (keyup)=" animate()"
+                        autocomplete="new-password" #pass="ngModel" minlength="6" required>
+                    <span class="focus-input100"></span>
+                    <span class="label-input100">Password</span>
+                </div>
+                <span *ngIf="pass.invalid && (pass.dirty || pass.touched)">
+                    <p class="text-danger  pb-2" *ngIf="pass.errors.required">
+                        Password is required.
+                    </p>
+                    <p class="text-danger pb-2" *ngIf="pass.errors?.minlength">
+                        Password must be greater than 6 characters long.
+                    </p>
+                </span>
+                <div class="container-login100-form-btn mt-4">
+                    <button class="login100-form-btn pt-1" [disabled]="!createUserForm.valid" (click)="login()">
+                        Login
+                    </button>
+                </div>
+            </form>
+
+            <div class="login100-more">
+            </div>
+        </div>
+    </div>
+</div>

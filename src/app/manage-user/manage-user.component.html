@@ -1,0 +1,178 @@
+<ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="default" type="ball-spin-clockwise">
+    <p style="color: white !important">Please Wait. </p>
+</ngx-spinner>
+<nav class="navbar navbar-expand-sm bg-nav navbar-dark mb-5 sticky-top p-3">
+    <div class="container-fluid">
+        <a class=" navbar-brand font-weight-bold">Eseal</a>
+        <div class="ml-auto">
+            <div class="dropdown">
+                <span class="text-uppercase profile">{{profile}}</span>
+                <div class="dropdown-content">
+                    <a>{{profileName}}</a>
+                    <a (click)="logout()"><i class="fa fa-power-off pr-2" aria-hidden="true"></i> Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+<div class="container-fluid">
+    <a class="btn  pull-right btn-primary mr-2" (click)="back()">Back</a>
+</div>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row pl-5  pt-3  pr-5">
+                        <div class="col-md-4">
+                            <h4>User List</h4>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-primary pull-right" data-toggle="modal"
+                                data-target="#exampleModal">Add
+                                User</button>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" [(ngModel)]="emailSearch"
+                                placeholder="&#xF002; Search by name or email" style="font-family: FontAwesome;" />
+                        </div>
+                    </div>
+                    <table class="table table-hover table-responsive mb-0 p-5">
+                        <thead>
+                            <tr>
+                                <!-- <th scope="row" class="hide">#</th> -->
+                                <th class="th-lg w-100 ">User Name</th>
+                                <th class="th-lg w-17">Email</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                *ngFor="let row of userRef | customerEmailFilter:emailSearch | paginate: { itemsPerPage: 6, currentPage: p }  let i = index">
+                                <!-- <td class="pt-3 hide">{{i+1}}</td> -->
+                                <td class="text-capitalize pt-3">{{row.name}}</td>
+                                <td class="pt-3">{{row.email}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p class="p-3 text-center fs-18" *ngIf="(userRef | customerEmailFilter:emailSearch) == false">No
+                        data found!</p>
+                    <!-- *************************************************** Pagination *************************************************************-->
+                    <div class="container mt-2 text-center">
+                        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ************************************************Modal for create user**************************************************************** -->
+<ng-template #template>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Create User</h4>
+        <button type="button" class="close pull-right  text-black-50" aria-label="Close"
+            (click)="modalRef.hide();resetUser()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form id="createUserForm" #createUserForm="ngForm">
+            <div class="form-group" data-validate="Enter Name">
+                <input type="text" name="name" [(ngModel)]="name" class="form-control w-75 m-auto" placeholder="Name"
+                    autocomplete="new-password" #names="ngModel" required>
+            </div>
+            <span *ngIf="names.invalid && (names.dirty || names.touched)">
+                <p class="text-danger ml-2 pl-5" *ngIf="names.errors.required">
+                    Name is required.
+                </p>
+            </span>
+            <div class="form-group" data-validate="Enter username">
+                <input type="text" name="userName" [(ngModel)]="userName" placeholder="Username"
+                    pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,4}$" class="form-control w-75 m-auto"
+                    autocomplete="new-password" #email="ngModel" required>
+            </div>
+            <span *ngIf="email.errors && (email.invalid && email.touched)">
+                <p class="text-danger ml-2 pl-5" *ngIf="email.errors.required">Email is
+                    required.</p>
+                <p class="text-danger ml-2 pl-5" *ngIf="email.errors.pattern">Please enter valid
+                    email.</p>
+            </span>
+            <div class="form-group" data-validate="Enter password">
+                <input type="password" name="pass" [(ngModel)]="password" class="form-control w-75 m-auto"
+                    placeholder="Password" autocomplete="new-password" #pass="ngModel" minlength="6" required>
+            </div>
+
+            <span *ngIf="pass.invalid && (pass.dirty || pass.touched)">
+                <p class="text-danger ml-2 pl-5" *ngIf="pass.errors.required">
+                    Password is required.
+                </p>
+                <p class="text-danger ml-2 pl-5" *ngIf="pass.errors?.minlength">
+                    Password must be greater than 6 characters long.
+                </p>
+            </span>
+            <div class="text-center mb-4">
+                <button class="btn btn-primary w-25" type="button" [disabled]="!createUserForm.valid"
+                    (click)="createUser()">
+                    Create
+                </button>
+            </div>
+        </form>
+    </div>
+</ng-template>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content modal-width">
+            <div class="modal-header">
+                <h4 class="modal-title pull-left">Create User</h4>
+                <button type="button" class="close pull-right  text-black-50" aria-label="Close" data-dismiss="modal"
+                    (click)="resetUser()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="createUserForm" #createUserForm="ngForm">
+                    <div class="form-group" data-validate="Enter Name">
+                        <input type="text" name="name" [(ngModel)]="name" class="form-control w-75 m-auto"
+                            placeholder="Name" autocomplete="new-password" #names="ngModel" required>
+                        <span *ngIf="names.invalid && (names.dirty || names.touched)">
+                            <p class="text-danger pad-l" *ngIf="names.errors.required">
+                                Name is required.
+                            </p>
+                        </span>
+                    </div>
+
+                    <div class="form-group" data-validate="Enter email">
+                        <input type="text" name="userName" [(ngModel)]="userName" placeholder="Email"
+                            pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,4}$" class="form-control w-75 m-auto"
+                            autocomplete="new-password" #email="ngModel" required>
+                        <span *ngIf="email.errors && (email.invalid && email.touched)">
+                            <p class="text-danger pad-l" *ngIf="email.errors.required">Email is
+                                required.</p>
+                            <p class="text-danger pad-l" *ngIf="email.errors.pattern">Please enter valid
+                                email.</p>
+                        </span>
+                    </div>
+                    <div class="form-group" data-validate="Enter password">
+                        <input type="password" name="pass" [(ngModel)]="password" class="form-control w-75 m-auto"
+                            placeholder="Password" autocomplete="new-password" #pass="ngModel" minlength="6" required>
+                        <span *ngIf="pass.invalid && (pass.dirty || pass.touched)">
+                            <p class="text-danger pad-l" *ngIf="pass.errors.required">
+                                Password is required.
+                            </p>
+                            <p class="text-danger pad-l" *ngIf="pass.errors?.minlength">
+                                Password must be greater than 6 characters long.
+                            </p>
+                        </span>
+                    </div>
+                    <div class="text-center mb-4">
+                        <button class="btn btn-primary w-25" type="button" [disabled]="!createUserForm.valid"
+                            (click)="createUser()">
+                            Create
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
