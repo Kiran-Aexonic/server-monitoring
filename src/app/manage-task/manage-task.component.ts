@@ -30,6 +30,8 @@ export class ManageTaskComponent implements OnInit {
   public completed: any = [];
   public taskDetail: any;
   public taskName: any;
+  public taskDetailf: any;
+  public taskNamef: any;
   public userRef: any = [];
   public selectedUser: any;
   public profileName: any;
@@ -117,6 +119,8 @@ export class ManageTaskComponent implements OnInit {
   }
   assign(row) {
     this.reset();
+    this.taskNamef = row.taskName;
+    this.taskDetailf = row.taskDetail;
     this.taskName = row.taskName;
     this.taskDetail = row.taskDetail;
   }
@@ -135,6 +139,7 @@ export class ManageTaskComponent implements OnInit {
       user: this.selectedUser.uid,
       username: this.selectedUser.name
     };
+    console.log(taskobj);
     // let url = 'https://servermonitoring-89515.firebaseio.com/assign/' + this.selectedUser.uid + '.json';
     // let urlstatus = 'https://servermonitoring-89515.firebaseio.com/status.json';
 
@@ -148,9 +153,11 @@ export class ManageTaskComponent implements OnInit {
     // })
     // this.http.put(urlstatus, this.taskStatus).subscribe(res => {
     // })
+
+
     let url = 'https://servermonitoring-89515.firebaseio.com/task.json';
     for (let i = 0; i < this.taskRef.length; i++)
-      if (this.taskRef[i].taskName == this.taskName && this.taskRef[i].taskDetail == this.taskDetail) {
+      if (this.taskRef[i].taskName == this.taskNamef && this.taskRef[i].taskDetail == this.taskDetailf) {
         this.taskRef[i] = taskobj;
       }
     $('#assignTask').modal('hide');
