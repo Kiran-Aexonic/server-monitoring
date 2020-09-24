@@ -31,9 +31,9 @@
                     <p class="text-danger  pb-2" *ngIf="pass.errors.required">
                         Password is required.
                     </p>
-                    <p class="text-danger pb-2" *ngIf="pass.errors?.minlength">
+                    <!-- <p class="text-danger pb-2" *ngIf="pass.errors?.minlength">
                         Password must be greater than 6 characters long.
-                    </p>
+                    </p> -->
                 </span>
                 <div class="container-login100-form-btn mt-4">
                     <button class="login100-form-btn pt-1" [disabled]="!createUserForm.valid" (click)="login()">

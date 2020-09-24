@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, TemplateRef } from '@angular/core';
+import { Component, OnInit, Input, TemplateRef, ViewChild, ElementRef } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { NgForm } from '@angular/forms';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -14,13 +14,14 @@ import { Router } from '@angular/router';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 declare var $: any;
-
+import * as _ from 'lodash';
 @Component({
   selector: 'app-manage-task',
   templateUrl: './manage-task.component.html',
   styleUrls: ['./manage-task.component.css']
 })
 export class ManageTaskComponent implements OnInit {
+  @ViewChild('filterName') redel: ElementRef;
   p: number = 1;
   public taskRef: any = [];
   public viewRef: any = [];
@@ -46,10 +47,13 @@ export class ManageTaskComponent implements OnInit {
   uid: any;
   to_date: any;
   minDate: any;
+
+  maxDate: any;
   dropdownSettings: IDropdownSettings = {};
   dropdownList = [];
   selectedItems = [];
   public username: any;
+  indexDelete: any;
   bsConfig: Partial<BsDatepickerConfig>;
   constructor(private auth: AuthService, public modalService: BsModalService, private fb: AngularFireDatabase, private toastr: ToastrService,
     private http: HttpClient, private route: Router,
@@ -64,10 +68,9 @@ export class ManageTaskComponent implements OnInit {
   ngOnInit(): void {
     this.spinner.show();
     this.minDate = new Date();
-    this.minDate.setDate(this.minDate.getDate() - 1);
-    this.fb.list('status').valueChanges().subscribe(res => {
-      this.taskStatus = res;
-    })
+    this.minDate.setDate(this.minDate.getDate());
+    this.maxDate = new Date();
+    this.maxDate.setDate(this.frmdate + 2);
     this.bsConfig = Object.assign({}, { containerClass: 'theme-dark-blue' }, { dateInputFormat: 'DD/MM/YYYY' });
     var x = JSON.parse(localStorage.getItem("user"));
     this.profile = x.email.charAt(0);
@@ -78,10 +81,9 @@ export class ManageTaskComponent implements OnInit {
     })
     this.fb.list('user').valueChanges().subscribe(res => {
       this.userRef = res;
-    })
-    //Assign task 
-    this.fb.list('assign').valueChanges().subscribe(res => {
-      this.assignRef = res;
+    });
+    this.fb.list('completed-task').valueChanges().subscribe(res => {
+      this.completed = res;
     })
     $(".theme-green .bs-datepicker-head").css(
       "background-color", "#072e58");
@@ -89,6 +91,9 @@ export class ManageTaskComponent implements OnInit {
       this.spinner.hide();
     }, 2000);
   }
+
+  //******************************************************************Date function***************************************
+
   onValueChanges() {
     this.from_date = $('#from_date').val()
     this.to_date = $('#to_date').val()
@@ -100,86 +105,112 @@ export class ManageTaskComponent implements OnInit {
       $('#date_errors').hide();
     }
   }
-  onValueChange() {
-    this.from_date = $('#from_date').val()
-    this.to_date = $('#to_date').val()
+  onValueChange(event) {
+    // this.from_date = $('#from_date').val()
+    // this.to_date = $('#to_date').val()
+    // if ($('#to_date').val() < $('#from_date').val()) {
+    // this.from_date = new Date($('#from_date').val());
+    // this.to_date = new Date($('#to_date').val());
+    if (this.frmdate > this.todate) {
 
-    if ($('#to_date').val() < $('#from_date').val()) {
+      // $('#to_date').val('');
+      this.todate = undefined;
       $('#date_error').show();
-      this.todate = '';
+      console.log(event);
     } else {
       $('#date_error').hide();
+
     }
   }
+
+  //******************************************************************Select function***************************************
+
   onItemSelect(item: any) {
     console.log(item.option);
   }
   onSelectAll(items: any) {
     console.log(items);
   }
+
+  //******************************************************************Assigned function***************************************
+
   assign(row) {
     this.reset();
     this.taskNamef = row.taskName;
     this.taskDetailf = row.taskDetail;
     this.taskName = row.taskName;
     this.taskDetail = row.taskDetail;
+    localStorage.setItem('task-name', row.taskName);
   }
-  before() {
-    this.fb.list('assign/' + this.selectedUser.uid).valueChanges().subscribe(res => {
-      this.taskAssign = res;
-    });
-  }
-  assigned() {
+
+  //******************************************************************Back to dashboard function***************************************
+
+  back() {
     this.spinner.show();
-    let taskobj: any = {
-      taskName: this.taskName,
-      taskDetail: this.taskDetail,
-      from_date: $('#from_date').val(),
-      to_date: $('#to_date').val(),
-      user: this.selectedUser.uid,
-      username: this.selectedUser.name
-    };
-    console.log(taskobj);
-    // let url = 'https://servermonitoring-89515.firebaseio.com/assign/' + this.selectedUser.uid + '.json';
-    // let urlstatus = 'https://servermonitoring-89515.firebaseio.com/status.json';
-
-    // this.taskAssign.unshift(taskobj);
-    // this.taskStatus.push(taskobj);
-    // this.http.put(url, this.taskAssign).subscribe(res => {
-    //   $('#assignTask').modal('hide');
-    //   this.reset();
-    //   this.toastr.success('Success', 'Task assigned successfully!');
-    //   location.reload();
-    // })
-    // this.http.put(urlstatus, this.taskStatus).subscribe(res => {
-    // })
-
-
-    let url = 'https://servermonitoring-89515.firebaseio.com/task.json';
-    for (let i = 0; i < this.taskRef.length; i++)
-      if (this.taskRef[i].taskName == this.taskNamef && this.taskRef[i].taskDetail == this.taskDetailf) {
-        this.taskRef[i] = taskobj;
-      }
-    $('#assignTask').modal('hide');
-    this.toastr.success('Success', 'Task assigned successfully!');
-
-    this.http.put(url, this.taskRef).subscribe(res => {
-    })
+    this.route.navigate(['dashboard']);
     setTimeout(() => {
       this.spinner.hide();
     }, 2000);
   }
+
+  //******************************************************************Assigned function***************************************
+  assigned() {
+    if (this.frmdate > this.todate) {
+      this.todate = undefined;
+      $('#date_error').show();
+      return false;
+    }
+    else {
+      this.spinner.show();
+      $('#date_error').hide();
+      let dt = new Date();
+      let time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
+      let taskobj: any = {
+        taskName: this.taskName,
+        taskDetail: this.taskDetail,
+        from_date: $('#from_date').val(),
+        to_date: $('#to_date').val(),
+        user: this.selectedUser.uid,
+        username: this.selectedUser.name,
+        email: this.selectedUser.email,
+        time: time,
+        status: 'Assigned'
+      };
+      let url = 'https://servermonitoring-89515.firebaseio.com/task.json';
+      for (let i = 0; i < this.taskRef.length; i++)
+        if (this.taskRef[i].taskName == this.taskNamef && this.taskRef[i].taskDetail == this.taskDetailf) {
+          this.taskRef[i] = taskobj;
+        }
+      $('#assignTask').modal('hide');
+      this.toastr.success('Success', 'Task assigned successfully!');
+      // for log details
+      this.completed.unshift(taskobj);
+      let url1 = 'https://servermonitoring-89515.firebaseio.com/completed-task.json';
+      this.http.put(url1, this.completed).subscribe(res => {
+      })
+      //
+      this.http.put(url, this.taskRef).subscribe(res => {
+      })
+      setTimeout(() => {
+        this.spinner.hide();
+      }, 2000);
+    }
+  }
+  //******************************************************************Reset function***************************************
+
   reset() {
     $("#createTaskForm").trigger("reset");
   }
+
   //******************************************************************Log details function***************************************
 
   logDetail() {
     this.spinner.show();
+    $("#assignTask").modal('hide');
     this.route.navigate(['log-detail']);
     setTimeout(() => {
       this.spinner.hide();
-    }, 2000);
+    }, 8000);
   }
   //******************************************************************Logout function***************************************
   logout() {
@@ -190,17 +221,37 @@ export class ManageTaskComponent implements OnInit {
     this.route.navigate(['/login']);
     this.spinner.hide();
   }
+
+  //******************************************************************View details function***************************************
   view(row) {
     this.viewRef = [];
+    this.taskAssign = [];
     this.taskDetailA = row.taskDetail;
     this.taskNameA = row.taskName;
-    // for (let i = 0; i < this.taskStatus.length; i++)
-    //   if (this.taskStatus[i].taskName == this.taskNameA && this.taskStatus[i].taskDetail == this.taskDetailA) {
-    //     this.viewRef = this.taskStatus[i];
-    //   }
     for (let i = 0; i < this.taskRef.length; i++)
       if (this.taskRef[i].taskName == this.taskNameA && this.taskRef[i].taskDetail == this.taskDetailA) {
         this.viewRef = this.taskRef[i];
       }
+    for (let i = 0; i < this.completed.length; i++)
+      if (this.completed[i].taskName == this.taskNameA) {
+        this.taskAssign.push(this.completed[i]);
+      }
+    this.taskAssign = _.sortBy(this.taskAssign, ['from_date', 'time']).reverse();
+  }
+  //******************************************************************Delete function***************************************
+  deleteIndex(row) {
+    this.indexDelete = this.taskRef.indexOf(row);
+  }
+  delete() {
+    this.spinner.show();
+    let url = 'https://servermonitoring-89515.firebaseio.com/task.json';
+    this.taskRef.splice(this.indexDelete, 1);
+    this.http.put(url, this.taskRef).subscribe(res => {
+      $('#deleteTask').modal('hide');
+      this.toastr.success('Success', 'Record deleted successfully!');
+    })
+    setTimeout(() => {
+      this.spinner.hide();
+    }, 2000);
   }
 }

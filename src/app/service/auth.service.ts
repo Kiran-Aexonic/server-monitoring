@@ -53,20 +53,36 @@ export class AuthService {
       .then(result => {
         this.NgxSpinnerService.show();
         this.isLogin = true;
-        this.toastr.success('Success', 'You are logged in successfully!');
         localStorage.setItem('user', JSON.stringify(result.user));
         localStorage.setItem("uid", JSON.stringify(result.user.uid));
-        this.router.navigate(['/dashboard']);
         this.NgxSpinnerService.hide();
-
+        this.toastr.success('Success', 'You are logged in successfully!');
+        this.router.navigate(['/dashboard']);
       }).catch(error => {
         this.NgxSpinnerService.show();
-        this.toastr.error('Error', 'Invalid credentials!');
         this.isLogin = false;
         this.NgxSpinnerService.hide();
+        this.toastr.error('Error', 'Invalid credentials!');
         location.reload();
 
       });
   }
+  changePassword(email, oldPassword, newPassword) {
+    firebase.auth()
+      .signInWithEmailAndPassword(email, oldPassword)
+      .then((user) => {
+        firebase.auth().currentUser.updatePassword(newPassword).then(() => {
+          this.toastr.success('Success', 'User updated successfully!');
+          console.log('New password has been saved');
+          this.NgxSpinnerService.hide();
+        }).catch((err) => {
+          console.log(err);
+          this.NgxSpinnerService.hide();
+        });
 
+      }).catch((err) => {
+        console.log(err);
+        this.NgxSpinnerService.hide();
+      });
+  }
 }

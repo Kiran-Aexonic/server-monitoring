@@ -178,7 +178,7 @@ button:disabled{
 .modal-width{
   width:130% !important;
 }
-.fa-eye{
+.fa-eye, .fa-trash{
   font-size: 20px !important;
   color: #000 !important;
   cursor: pointer;
@@ -209,5 +209,14 @@ option {
     top: 50px;
     left: 0;
     transform: none;
+}
+.pull-right{
+  float: left !important;
+}
+.text-right{
+  text-align: left !important;
+}
+.modal-width {
+  width: 100% !important;
 }
 }

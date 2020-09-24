@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 declare var $: any;
-
+import * as _ from 'lodash';
 @Component({
   selector: 'app-log-detail',
   templateUrl: './log-detail.component.html',
@@ -22,27 +22,13 @@ declare var $: any;
 })
 export class LogDetailComponent implements OnInit {
   p: number = 1;
-  public taskRef: any = [];
-  public viewRef: any = [];
   public taskAssign: any = [];
-  public taskStatus: any = [];
-  public assignRef: any = [];
   public completed: any = [];
   public taskDetail: any;
   public taskName: any;
-  public userRef: any = [];
   public selectedUser: any;
   public profileName: any;
   public profile: any;
-  public taskNameA: any;
-  public taskDetailA: any;
-  public frmDateA: any;
-  public toDateA: any;
-  public todate: any;
-  public frmdate: any;
-  dropdownSettings: IDropdownSettings = {};
-  dropdownList = [];
-  selectedItems = [];
   public username: any;
   bsConfig: Partial<BsDatepickerConfig>;
   constructor(private auth: AuthService, public modalService: BsModalService, private fb: AngularFireDatabase, private toastr: ToastrService,
@@ -52,25 +38,39 @@ export class LogDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    this.fb.list('completed-task').valueChanges().subscribe(res => {
+      this.completed = res;
+      console.log(res);
+    })
     this.spinner.show();
     var x = JSON.parse(localStorage.getItem("user"));
     this.profile = x.email.charAt(0);
     this.profileName = x.email;
-    this.logDetail();
+
+    setTimeout(() => {
+      this.logDetail();
+      this.spinner.hide();
+    }, 8000);
+  }
+  //******************************************************************Back to dashboard function***************************************
+
+  back() {
+    this.spinner.show();
+    this.route.navigate(['manage-task']);
     setTimeout(() => {
       this.spinner.hide();
     }, 2000);
   }
-
-
   //******************************************************************Log details function***************************************
 
   logDetail() {
-    console.log("hey");
-    this.fb.list('completed-task').valueChanges().subscribe(res => {
-      this.completed = res;
-      console.log(this.completed)
-    })
+    this.taskName = localStorage.getItem('task-name');
+    for (let i = 0; i < this.completed.length; i++)
+      if (this.completed[i].taskName == this.taskName) {
+        this.taskAssign.push(this.completed[i]);
+      }
+    this.taskAssign = _.sortBy(this.taskAssign, 'from_date').reverse();
   }
   //******************************************************************Logout function***************************************
   logout() {

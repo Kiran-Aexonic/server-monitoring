@@ -2,6 +2,15 @@
 {
   font-size: 50px;
 }
+.fs-12
+{
+  font-size: 12px !important;
+  color:#fff;
+}
+.fs-12a
+{
+  font-size: 12px !important;
+}
 .material-icons
 {
   font-size: 40px;

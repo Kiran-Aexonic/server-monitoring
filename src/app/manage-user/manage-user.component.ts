@@ -16,6 +16,7 @@ import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { SearchPipe } from '../search.pipe';
 import { Pipe, PipeTransform } from '@angular/core';
+import * as firebase from 'firebase';
 
 declare var $: any;
 
@@ -38,6 +39,9 @@ export class ManageUserComponent implements OnInit {
   public name: any;
   public userName: any;
   public password: any;
+  public nameE: any;
+  public userNameE: any;
+  public passwordE: any;
   public url = 'https://servermonitoring-89515.firebaseio.com/user.json';
   public userid: any;
   public emailSearch: any;
@@ -50,7 +54,12 @@ export class ManageUserComponent implements OnInit {
   public toDateA: any;
   public todate: any;
   public frmdate: any;
+  public passwordConf: any;
+  public passwordNew: any;
+  public passwordOld: any;
   uid: any;
+  userEditId: any;
+  editIndex: any;
   dropdownSettings: IDropdownSettings = {};
   dropdownList = [];
   selectedItems = [];
@@ -107,15 +116,14 @@ export class ManageUserComponent implements OnInit {
     this.firebaseAuth.
       createUserWithEmailAndPassword(this.userName, this.password)
       .then(res => {
-        console.log(res);
         this.userid = res.user.uid;
-        console.log(res.user.metadata.creationTime)
         this.toastr.success('Success', 'User created successfully!');
         let obj: any = {
           email: this.userName,
           name: this.name,
+          password: this.password,
           uid: this.userid,
-          // date:
+          user: res
         };
         this.resetUser();
         $('#exampleModal').modal('hide');
@@ -160,4 +168,58 @@ export class ManageUserComponent implements OnInit {
     this.spinner.hide();
   }
 
+  edit(row) {
+    console.log(row)
+    this.nameE = row.name;
+    this.userNameE = row.email;
+    this.passwordE = row.password;
+    this.editIndex = this.userRef.indexOf(row);
+    this.userEditId = row.uid
+  }
+  editUser() {
+    this.spinner.show();
+    this.userRef[this.editIndex] = {
+      email: this.userNameE,
+      name: this.nameE,
+      password: this.passwordNew,
+      uid: this.userEditId,
+    };
+    $('#editUser').modal('hide');
+    this.http.put(this.url, this.userRef).subscribe(res => {
+    })
+    this.auth.changePassword(this.userNameE, this.passwordE, this.passwordNew)
+    $('#editUserForm').trigger('reset');
+    setTimeout(() => {
+      this.spinner.hide();
+    }, 2000);
+
+  }
+  resetForm() {
+    $('#editUserForm').trigger('reset');
+    $('#error1').hide();
+    $('#error').hide();
+
+  }
+  compare() {
+    if (this.passwordNew != this.passwordConf) {
+      $('#error1').show();
+      // this.passwordConf = '';
+      return;
+    }
+    else {
+      $('#error1').hide();
+
+    }
+  }
+  check() {
+    if (this.passwordOld != this.passwordE) {
+      $('#error').show();
+      this.passwordOld = '';
+      return;
+    }
+    else {
+      $('#error').hide();
+
+    }
+  }
 }

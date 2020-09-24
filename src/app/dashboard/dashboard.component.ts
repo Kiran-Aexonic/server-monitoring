@@ -48,8 +48,11 @@ export class DashboardComponent implements OnInit {
   public assigned: any = [];
   public statusRef: any = [];
   taskDateA: any;
+  public selectedUser: any;
   dropdownSettings: IDropdownSettings = {};
   dropdownList = [];
+  dropdownList1 = [];
+  dropdownList2 = [];
   selectedItems = [];
   public disableStatus: any;
   constructor(private fb: AngularFireDatabase, private auth: AuthService, public modalService: BsModalService, private spinner: NgxSpinnerService,
@@ -63,20 +66,21 @@ export class DashboardComponent implements OnInit {
       });
     }
     else {
-      // this.fb.list('assign/' + this.uid).valueChanges().subscribe(res => {
-      //   this.taskAssign = res;
-      // })
-
       this.fb.list('task').valueChanges().subscribe(res => {
         this.taskRef = res;
       });
     }
-    setTimeout(() => {
-      this.spinner.hide();
-    }, 3000);
+
   }
   ngOnInit(): void {
     this.spinner.show();
+    this.resetTask();
+    setTimeout(() => {
+      for (let i = 0; i < this.taskRef.length; i++)
+        if (this.taskRef[i].user == this.uid) {
+          this.taskAssign.push(this.taskRef[i]);
+        }
+    }, 4000);
     var x = JSON.parse(localStorage.getItem("user"));
     this.profile = x.email.charAt(0);
     this.profileName = x.email;
@@ -86,14 +90,14 @@ export class DashboardComponent implements OnInit {
     this.fb.list('user').valueChanges().subscribe(res => {
       this.userRef = res;
     })
-    this.fb.list('status').valueChanges().subscribe(res => {
-      this.statusRef = res;
-    })
     this.modalService.onHide.subscribe((e) => {
     });
-    this.dropdownList = [
-      { item_id: '1', item_text: 'Complete' },
-      { item_id: '2', item_text: 'Inprogress' },
+    this.dropdownList2 = [
+      { item_id: '1', item_text: 'Inprogress' },
+      { item_id: '2', item_text: 'Complete' },
+    ];
+    this.dropdownList1 = [
+      { item_id: '1', item_text: 'Inprogress' },
     ];
     this.dropdownSettings = {
       singleSelection: true,
@@ -104,13 +108,10 @@ export class DashboardComponent implements OnInit {
       itemsShowLimit: 3,
       allowSearchFilter: true
     };
+
     setTimeout(() => {
-      console.log(this.taskRef)
-      for (let i = 0; i < this.taskRef.length; i++)
-        if (this.taskRef[i].user == this.uid) {
-          this.taskAssign.push(this.taskRef[i]);
-        }
-    }, 3000);
+      this.spinner.hide();
+    }, 4000);
   }
   //******************************************************************Assign task functions***************************************
   assign(row) {
@@ -120,11 +121,16 @@ export class DashboardComponent implements OnInit {
         row.status = this.taskRef[i].status;
       }
     if (row.status == 'Complete') {
-      this.selectedItems = [{ item_id: '1', item_text: 'Complete' }]
+      this.selectedItems = [{ item_id: '2', item_text: 'Complete' }]
     } else if (row.status == 'Inprogress') {
-      this.selectedItems = [{ item_id: '2', item_text: 'Inprogress' }]
-    } else {
-      this.selectedItems = [];
+      this.dropdownList = this.dropdownList2;
+      this.selectedItems = [{ item_id: '1', item_text: 'Inprogress' }]
+      this.isDone = true;
+    }
+    else {
+      this.dropdownList = this.dropdownList1;
+      this.selectedItems = [{ item_id: '1', item_text: 'Inprogress' }]
+      this.isDone = true;
     }
   }
 
@@ -167,7 +173,9 @@ export class DashboardComponent implements OnInit {
     this.spinner.show();
     let taskobj: any = {
       taskName: this.taskName,
-      taskDetail: this.taskDetail
+      taskDetail: this.taskDetail,
+      user: this.selectedUser.uid,
+      username: this.selectedUser.name
     };
     this.taskRef.unshift(taskobj);
     this.http.put(this.taskUrl, this.taskRef).subscribe(res => {
@@ -243,6 +251,10 @@ export class DashboardComponent implements OnInit {
   onSelectAll(items: any) {
     console.log(items);
   }
+  onDeselect(item) {
+    console.log("item");
+    this.isDone = false;
+  }
   logDetail() {
     this.spinner.show();
     this.router.navigate(['log-detail']);
@@ -253,30 +265,25 @@ export class DashboardComponent implements OnInit {
   getStatus(row) {
     this.spinner.show();
     $('#assignTask').modal('hide');
+    let dt = new Date();
+    let time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
     if (this.selectedItems[0].item_text == 'Complete') {
       row.status = 'Complete';
+      row.time = time;
       this.completed.unshift(row);
-      console.log(this.completed)
       this.disableStatus = true;
       let url = 'https://servermonitoring-89515.firebaseio.com/completed-task.json';
       this.http.put(url, this.completed).subscribe(res => {
       })
     }
-    // for (let i = 0; i < this.statusRef.length; i++)
-    //   if (this.statusRef[i].taskName == row.taskName && this.statusRef[i].taskDetail == row.taskDetail && this.statusRef[i].user == row.user) {
-    //     this.statusRef[i].status = this.selectedItems[0].item_text;
-    //   }
-    // for (let i = 0; i < this.taskAssign.length; i++)
-    //   if (this.statusRef[i].taskName == row.taskName && this.statusRef[i].taskDetail == row.taskDetail && this.statusRef[i].user == row.user) {
-    //     this.statusRef[i].status = this.selectedItems[0].item_text;
-    //   }
-
-    // let urlstatus = 'https://servermonitoring-89515.firebaseio.com/status.json';
-    // this.http.put(urlstatus, this.statusRef).subscribe(res => {
-    // })
-    // this.http.put(urlstatus, this.statusRef).subscribe(res => {
-    // })
-
+    else {
+      row.status = 'Inprogress';
+      row.time = time;
+      this.completed.unshift(row);
+      let url = 'https://servermonitoring-89515.firebaseio.com/completed-task.json';
+      this.http.put(url, this.completed).subscribe(res => {
+      })
+    }
     for (let i = 0; i < this.taskRef.length; i++)
       if (this.taskRef[i].taskName == row.taskName && this.taskRef[i].taskDetail == row.taskDetail && this.taskRef[i].user == row.user && this.taskRef[i].from_date == row.from_date && this.taskRef[i].to_date == row.to_date) {
         this.taskRef[i].status = this.selectedItems[0].item_text;
@@ -284,8 +291,8 @@ export class DashboardComponent implements OnInit {
     $('#assignTask').modal('hide');
     let url = 'https://servermonitoring-89515.firebaseio.com/task.json';
     this.http.put(url, this.taskRef).subscribe(res => {
+      this.spinner.hide();
       this.toastr.success('Success', 'Status updated successfully!');
-      location.reload();
     })
     setTimeout(() => {
       this.spinner.hide();

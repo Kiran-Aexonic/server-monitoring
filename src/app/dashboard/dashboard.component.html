@@ -31,13 +31,13 @@
                             <div class="col-md-12">
                                 <h4 class=" text-center">Task List</h4>
                             </div>
-
                         </div>
                         <table class="table table-hover table-responsive mb-0 p-5">
                             <thead>
                                 <tr>
                                     <th scope="row">#</th>
-                                    <th class="th-lg w-100">Task Name</th>
+                                    <th class="th-lg w-50">Task Name</th>
+                                    <th class="th-lg w-50 text-center">Status</th>
                                     <th class="th-lg">Action</th>
                                 </tr>
                             </thead>
@@ -46,8 +46,22 @@
                                     <td class="pt-3">{{i+1}}</td>
                                     <td class="text-capitalize pt-3">
                                         {{row.taskName}}</td>
+                                    <td class="text-capitalize pt-3 text-center">
+                                        <span class="badge-pill p-1 badge-warning fs-12"
+                                            *ngIf="row.status == 'Inprogress'">{{row.status}}</span>
+                                        <span class="badge-pill p-1 badge-success fs-12"
+                                            *ngIf="row.status == 'Complete'">{{row.status}}</span>
+                                        <span *ngIf="row.status == 'Assigned'"
+                                            class="badge-pill p-1 badge-info fs-12">Assigned</span>
+                                    </td>
                                     <td><button class="btn btn-primary text-capitalize" data-toggle="modal"
-                                            (click)="assign(row)" data-target="#assignTask">Start</button></td>
+                                            *ngIf="row.status == null" (click)="assign(row)"
+                                            data-target="#assignTask">Start</button>
+                                        <button class="btn btn-primary text-capitalize" data-toggle="modal"
+                                            *ngIf="row.status != null" (click)="assign(row)"
+                                            [disabled]="row.status == 'Complete'"
+                                            data-target="#assignTask">Check</button>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -85,9 +99,8 @@
                         add_task
                     </span>
                     <h4 class="pb-2">Create Task</h4>
-                    <button class="btn btn-primary m-auto w-50" data-toggle="modal"
+                    <button class="btn btn-primary m-auto w-50" data-toggle="modal" (click)="resetTask()"
                         data-target="#exampleModal">Create</button>
-
                 </div>
             </div>
             <div class="col-md-4 mb-3">
@@ -138,6 +151,21 @@
                                     Task detail is required.
                                 </p>
                             </span></div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputuser" class="col-sm-3 col-form-label" for="selectedItems">Select
+                            User</label>
+                        <div class="col-sm-9">
+                            <select class="selectpicker" data-live-search="true" class="form-control"
+                                placeholder="Select User" name="selectedUser" [(ngModel)]="selectedUser" required
+                                #userSelect="ngModel">
+                                <option value="" selected="true" disabled>Select User</option>
+                                <option *ngFor="let c of userRef" [ngValue]="c">{{c.name}}</option>
+                            </select>
+                            <span *ngIf="userSelect.invalid && (userSelect.dirty || userSelect.touched)">
+                                <p class="text-danger" *ngIf="userSelect.errors.required">Please select user</p>
+                            </span>
+                        </div>
                     </div>
                     <div class="form-group row">
                         <div class="col-sm-10 offset-sm-3">
@@ -250,7 +278,7 @@
                             <ng-multiselect-dropdown [placeholder]="'Select Status'" [settings]="dropdownSettings"
                                 [data]="dropdownList" name="selectedItems" [(ngModel)]="selectedItems"
                                 (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)"
-                                [disabled]="assigned.status == 'Complete'" required>
+                                (onDeSelect)="onDeselect($event)" [disabled]="assigned.status == 'Complete'" required>
                             </ng-multiselect-dropdown>
 
                         </div>

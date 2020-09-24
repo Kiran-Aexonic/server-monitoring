@@ -536,6 +536,7 @@ input.input100 {
   transition: opacity 0.4s;
 }
 .login100-more{
+  /* background-image: url("../../assets/img/bg-01.jpg"); */
   background-image: url("../../assets/img/bg-01.jpg");
 }
 .alert-validate::after {

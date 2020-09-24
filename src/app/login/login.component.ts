@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../service/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from 'ngx-spinner';
-
+import { Router } from '@angular/router';
 declare var $: any;
 
 @Component({
@@ -16,29 +16,22 @@ declare var $: any;
 export class LoginComponent implements OnInit {
   public userName: any;
   public password: any;
-  constructor(private auth: AuthService, private spinner: NgxSpinnerService, private toastr: ToastrService) { }
+  public uid: any;
+  constructor(private auth: AuthService, private spinner: NgxSpinnerService, private route: Router, private toastr: ToastrService) {
+    this.uid = JSON.parse(localStorage.getItem("uid"));
+    if (this.uid != null) {
+      this.route.navigate(['dashboard']);
+    }
+  }
 
   ngOnInit(): void {
   }
   login() {
     this.spinner.show();
     this.auth.signin(this.userName, this.password)
-    // $('#login').trigger("reset");
     setTimeout(() => {
       this.spinner.hide();
-    }, 2000);
-
-    // {
-    //   this.spinner.show();
-    //   if (this.auth.isLogin == true) {
-    //     this.toastr.success('Success', 'You are logged in successfully!');
-    //     $('#createUserForm').trigger('reset');
-    //   }
-    //   else {
-    //     this.toastr.error('Error', 'Invalid credentials!');
-    //   }
-    //   this.spinner.hide();
-    // }
+    }, 5000);
   }
   animate() {
     $('.input100').each(function () {

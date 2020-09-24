@@ -1,7 +1,7 @@
 <ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="default" type="ball-spin-clockwise">
     <p style="color: white !important">Please Wait. </p>
 </ngx-spinner>
-<nav class="navbar navbar-expand-sm bg-nav navbar-dark mb-5 sticky-top p-3">
+<nav class="navbar navbar-expand-sm bg-nav navbar-dark mb-4 sticky-top p-3">
     <div class="container-fluid">
         <a class=" navbar-brand font-weight-bold">Eseal</a>
         <div class="ml-auto">
@@ -15,35 +15,37 @@
         </div>
     </div>
 </nav>
-<div class="container mt-5">
+<div class="container-fluid text-right">
+    <a class="btn btn-primary mr-3" (click)="back()">Back</a>
+</div>
+<div class="container mt-4">
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
-                    <div class="row pl-5 pr-5 pt-5">
-                        <div class="col-md-6">
+                    <div class="row  pt-4">
+                        <div class="col-md-12 text-center">
                             <h4 class="">Task List</h4>
-                        </div>
-                        <div class="col-md-6 ">
-                            <button class="btn btn-primary pull-right" (click)="logDetail()">Log Details</button>
                         </div>
                     </div>
                     <table class="table table-hover table-responsive mb-0 p-5">
                         <thead>
                             <tr>
-                                <th scope="row">#</th>
                                 <th class="th-lg w-75 ">Task Name</th>
+                                <th class="th-lg w-75 ">Assigned To</th>
                                 <th class="th-lg ">Status</th>
                                 <th class="th-lg  ">Action</th>
                                 <th class=" ">View</th>
+                                <th class=" ">Delete</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr
-                                *ngFor="let row of taskRef | paginate: { itemsPerPage: 10, currentPage: p } let i = index">
-                                <td class="pt-3">{{i+1}}</td>
+                                *ngFor="let row of taskRef | paginate: { itemsPerPage: 5, currentPage: p } let i = index">
                                 <td class="text-capitalize pt-3">
                                     {{row.taskName}}</td>
+                                <td class="text-capitalize pt-3">
+                                    {{row.email}}</td>
                                 <td class="text-capitalize pt-3 text-center">
                                     <span class="badge-pill p-1 badge-warning fs-12"
                                         *ngIf="row.status == 'Inprogress'">{{row.status}}</span>
@@ -51,12 +53,16 @@
                                         *ngIf="row.status == 'Complete'">{{row.status}}</span>
                                     <span class="badge-pill p-1 badge-danger fs-12"
                                         *ngIf="row.status == 'Incomplete'">{{row.status}}</span>
-                                    <span *ngIf="row.status == null" class="no-badge">-</span>
+                                    <span *ngIf="row.status == 'Assigned'"
+                                        class=" badge-pill p-1 badge-info fs-12">Assigned</span>
                                 </td>
                                 <td><button class="btn btn-primary text-capitalize" (click)="assign(row)"
-                                        data-toggle="modal" data-target="#assignTask">Assign</button></td>
+                                        data-toggle="modal" data-target="#assignTask"
+                                        [disabled]="row.status == 'Inprogress'">Assign</button></td>
                                 <td class="text-center pt-3"><a (click)="view(row)" data-toggle="modal"
                                         data-target="#viewTask"><i class="fa fa-eye"></i></a></td>
+                                <td class="pt-3 text-center"><i class="fa fa-trash" data-toggle="modal"
+                                        (click)="deleteIndex(row)" data-target="#deleteTask"></i></td>
                             </tr>
                         </tbody>
                     </table>
@@ -104,8 +110,8 @@
                             User</label>
                         <div class="col-sm-9">
                             <select class="selectpicker" data-live-search="true" class="form-control"
-                                placeholder="Select User" name="selectedUser" [(ngModel)]="selectedUser"
-                                (change)="before()" required #userSelect="ngModel">
+                                placeholder="Select User" name="selectedUser" [(ngModel)]="selectedUser" required
+                                #userSelect="ngModel">
                                 <option value="" selected="true" disabled>Select User</option>
                                 <option *ngFor="let c of userRef" [ngValue]="c">{{c.name}}</option>
                             </select>
@@ -134,7 +140,8 @@
                         <div class="col-sm-9">
                             <input placeholder="Select To Date" class="form-control" bsDatepicker name="todate"
                                 id="to_date" [(ngModel)]="todate" [bsConfig]="bsConfig" #toDate="ngModel"
-                                [minDate]="minDate" [daysDisabled]="[6,0]" (bsValueChange)="onValueChange()" required>
+                                [minDate]="minDate" [daysDisabled]="[6,0]" #filterName [maxDate]="maxDate" required>
+                            <!-- (onHidden)="onValueChange($event)" -->
                             <span *ngIf="toDate.invalid && (toDate.dirty || toDate.touched)">
                                 <p class="text-danger" *ngIf="toDate.errors.required">Please select to date.</p>
                             </span>
@@ -165,50 +172,91 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="overflow-y: auto; max-height:500px !important;">
                 <form id="viewTaskForm" #viewTaskForm="ngForm" class="p-4">
                     <div class="form-group row">
-                        <label for="inputEmail" class="col-sm-3 col-form-label">Task Name:</label>
-                        <div class="col-sm-9">
+                        <label for="inputEmail" class="col-md-3 col-form-label">Task Name:</label>
+                        <div class="col-md-9">
                             <label for="" class="text-capitalize pt-2 font-weight600">{{taskNameA}}</label>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="inputPassword" class="col-sm-3 col-form-label">Task Details:</label>
-                        <div class="col-sm-9">
+                        <label for="inputPassword" class="col-md-3 col-form-label">Task Details:</label>
+                        <div class="col-md-9">
                             <label for="" class="text-capitalize pt-2 font-weight600">{{taskDetailA}}</label>
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <label for="inputPassword" class="col-sm-3 col-form-label">Assigned to:</label>
-                        <div class="col-sm-5">
+                    <!-- <div class="form-group row">
+                        <label for="inputPassword" class="col-md-3 col-form-label">Assigned to:</label>
+                        <div class="col-md-5">
                             <label for="" class="text-capitalize pt-2 font-weight600">{{viewRef.username}}</label>
                             <label for="" class="text-capitalize pt-2" *ngIf="viewRef.username ==null">-</label>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="inputPassword" class="col-sm-3 col-form-label" for="selectedItems">From
+                        <label for="inputPassword" class="col-md-3 col-form-label" for="selectedItems">From
                             Date:</label>
-                        <div class="col-sm-9">
+                        <div class="col-md-9">
                             <label for="" class="text-capitalize pt-2 font-weight600">{{viewRef.from_date}}</label>
                             <label for="" class="text-capitalize pt-2" *ngIf="viewRef.from_date ==null">-</label>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="inputPassword" class="col-sm-3 col-form-label" for="selectedItems">To Date:</label>
-                        <div class="col-sm-9">
+                        <label for="inputPassword" class="col-md-3 col-form-label" for="selectedItems">To Date:</label>
+                        <div class="col-md-9">
                             <label for="" class="text-capitalize pt-2 font-weight600">{{viewRef.to_date}}</label>
                             <label for="" class="text-capitalize pt-2" *ngIf="viewRef.to_date ==null">-</label>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="inputPassword" class="col-sm-3 col-form-label">Status:</label>
-                        <div class="col-sm-5">
+                        <label for="inputPassword" class="col-md-3 col-form-label">Status:</label>
+                        <div class="col-md-5">
                             <label for="" class="text-capitalize pt-2 font-weight600">{{viewRef.status}}</label>
                             <label for="" class="text-capitalize pt-2" *ngIf="viewRef.status ==null">-</label>
                         </div>
-                    </div>
+                    </div> -->
+                    <table class="table-responsive">
+                        <thead *ngIf="taskAssign.length != 0">
+                            <tr>
+                                <th class="th-lg w-20">Assignee</th>
+                                <th class="th-lg w-25">From Date</th>
+                                <th class=" w-20">To Date</th>
+                                <th class="w-20">Time</th>
+                                <th class="w-20">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let row of taskAssign">
+                                <td class="text-capitalize pt-3">{{row.username}}</td>
+                                <td class="text-capitalize pt-3">{{row.from_date}}</td>
+                                <td class="text-capitalize pt-3">{{row.to_date}}</td>
+                                <td class="text-capitalize pt-3">{{row.time}}</td>
+                                <td class="text-capitalize pt-3">{{row.status}}</td>
+                            </tr>
+                            <h5 *ngIf="taskAssign.length == 0">No log details!</h5>
+                        </tbody>
+                    </table>
                 </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ************************************************Modal for delete task**************************************************************** -->
+<div class="modal fade" id="deleteTask" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Delete Task</h5>
+                <button type="button" class="close  text-black-50" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <i class="fa fa-exclamation-triangle text-danger" aria-hidden="true"></i>
+                <h5 class="mt-4 mb-4">Are you sure to delete task?</h5>
+                <button class="btn btn-success  mr-4" data-dismiss="modal">Cancel</button>
+                <button class="btn btn-danger" (click)="delete()">Delete</button>
             </div>
         </div>
     </div>
