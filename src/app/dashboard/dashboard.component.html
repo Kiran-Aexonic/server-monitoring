@@ -157,14 +157,46 @@
                             User</label>
                         <div class="col-sm-9">
                             <select class="selectpicker" data-live-search="true" class="form-control"
-                                placeholder="Select User" name="selectedUser" [(ngModel)]="selectedUser" required
-                                #userSelect="ngModel">
+                                placeholder="Select User" name="selectedUser" [(ngModel)]="selectedUser"
+                                (change)="display()" #userSelect="ngModel">
                                 <option value="" selected="true" disabled>Select User</option>
                                 <option *ngFor="let c of userRef" [ngValue]="c">{{c.name}}</option>
                             </select>
                             <span *ngIf="userSelect.invalid && (userSelect.dirty || userSelect.touched)">
                                 <p class="text-danger" *ngIf="userSelect.errors.required">Please select user</p>
                             </span>
+                        </div>
+                    </div>
+                    <div id="dates" style="display: none;">
+                        <div class="form-group row">
+                            <label for="inputPassword" class="col-sm-3 col-form-label" for="selectedItems">From
+                                Date</label>
+                            <div class="col-sm-9">
+                                <input placeholder="Select From Date" class="form-control" bsDatepicker name="frmdate"
+                                    id="from_date" [(ngModel)]="frmdate" [bsConfig]="bsConfig" #frmDate="ngModel"
+                                    [minDate]="minDate" [daysDisabled]="[6,0]" (onHidden)="onValueChange()">
+                                <span *ngIf="dateValidation && frmdateValidation">
+                                    <p class="text-danger" *ngIf="dateValidation">Please select from date</p>
+                                </span>
+                                <p id="date_errors" class="text-danger" style="display: none;">From date must be less
+                                    than to date</p>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputPassword" class="col-sm-3 col-form-label" for="selectedItems">To
+                                Date</label>
+                            <div class="col-sm-9">
+                                <input placeholder="Select To Date" class="form-control" bsDatepicker name="todate"
+                                    id="to_date" [(ngModel)]="todate" [bsConfig]="bsConfig" #toDate="ngModel"
+                                    [minDate]="minDate" [daysDisabled]="[6,0]" #filterName
+                                    (onHidden)="onValueChanges()">
+                                <span *ngIf="dateValidation">
+                                    <p class="text-danger" *ngIf="dateValidation && todateValidation">Please select to
+                                        date.</p>
+                                </span>
+                                <p id="date_error" class="text-danger" style="display: none;">It must be greater
+                                    than from date</p>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group row">

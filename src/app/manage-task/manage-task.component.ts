@@ -47,7 +47,6 @@ export class ManageTaskComponent implements OnInit {
   uid: any;
   to_date: any;
   minDate: any;
-
   maxDate: any;
   dropdownSettings: IDropdownSettings = {};
   dropdownList = [];
@@ -106,14 +105,7 @@ export class ManageTaskComponent implements OnInit {
     }
   }
   onValueChange(event) {
-    // this.from_date = $('#from_date').val()
-    // this.to_date = $('#to_date').val()
-    // if ($('#to_date').val() < $('#from_date').val()) {
-    // this.from_date = new Date($('#from_date').val());
-    // this.to_date = new Date($('#to_date').val());
     if (this.frmdate > this.todate) {
-
-      // $('#to_date').val('');
       this.todate = undefined;
       $('#date_error').show();
       console.log(event);

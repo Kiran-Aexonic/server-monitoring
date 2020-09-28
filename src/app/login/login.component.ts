@@ -29,6 +29,7 @@ export class LoginComponent implements OnInit {
   login() {
     this.spinner.show();
     this.auth.signin(this.userName, this.password)
+    $("#login").trigger('reset')
     setTimeout(() => {
       this.spinner.hide();
     }, 5000);

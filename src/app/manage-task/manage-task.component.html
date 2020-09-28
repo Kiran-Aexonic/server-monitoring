@@ -44,17 +44,17 @@
                                 *ngFor="let row of taskRef | paginate: { itemsPerPage: 5, currentPage: p } let i = index">
                                 <td class="text-capitalize pt-3">
                                     {{row.taskName}}</td>
-                                <td class="text-capitalize pt-3">
-                                    {{row.email}}</td>
+                                <td class="pt-3 ">
+                                    <span class="" *ngIf="row.email != '-'">{{row.email}}</span>
+                                    <span class="" *ngIf="row.email == '-'" class="ml-5">-</span></td>
                                 <td class="text-capitalize pt-3 text-center">
                                     <span class="badge-pill p-1 badge-warning fs-12"
                                         *ngIf="row.status == 'Inprogress'">{{row.status}}</span>
                                     <span class="badge-pill p-1 badge-success fs-12"
                                         *ngIf="row.status == 'Complete'">{{row.status}}</span>
-                                    <span class="badge-pill p-1 badge-danger fs-12"
-                                        *ngIf="row.status == 'Incomplete'">{{row.status}}</span>
                                     <span *ngIf="row.status == 'Assigned'"
                                         class=" badge-pill p-1 badge-info fs-12">Assigned</span>
+                                    <span *ngIf="row.status == null" class="text-center">-</span>
                                 </td>
                                 <td><button class="btn btn-primary text-capitalize" (click)="assign(row)"
                                         data-toggle="modal" data-target="#assignTask"
@@ -126,7 +126,7 @@
                         <div class="col-sm-9">
                             <input placeholder="Select From Date" class="form-control" bsDatepicker name="frmdate"
                                 id="from_date" [(ngModel)]="frmdate" [bsConfig]="bsConfig" #frmDate="ngModel"
-                                [minDate]="minDate" [daysDisabled]="[6,0]" required>
+                                [minDate]="minDate" [daysDisabled]="[6,0]" placement="top" required>
                             <span *ngIf="frmDate.invalid && (frmDate.dirty || frmDate.touched)">
                                 <p class="text-danger" *ngIf="frmDate.errors.required">Please select from date</p>
                             </span>
@@ -140,7 +140,8 @@
                         <div class="col-sm-9">
                             <input placeholder="Select To Date" class="form-control" bsDatepicker name="todate"
                                 id="to_date" [(ngModel)]="todate" [bsConfig]="bsConfig" #toDate="ngModel"
-                                [minDate]="minDate" [daysDisabled]="[6,0]" #filterName [maxDate]="maxDate" required>
+                                [minDate]="minDate" [daysDisabled]="[6,0]" #filterName [maxDate]="maxDate"
+                                placement="top" required>
                             <!-- (onHidden)="onValueChange($event)" -->
                             <span *ngIf="toDate.invalid && (toDate.dirty || toDate.touched)">
                                 <p class="text-danger" *ngIf="toDate.errors.required">Please select to date.</p>
@@ -217,7 +218,7 @@
                     </div> -->
                     <table class="table-responsive">
                         <thead *ngIf="taskAssign.length != 0">
-                            <tr>
+                            <tr class="borderbtm">
                                 <th class="th-lg w-20">Assignee</th>
                                 <th class="th-lg w-25">From Date</th>
                                 <th class=" w-20">To Date</th>

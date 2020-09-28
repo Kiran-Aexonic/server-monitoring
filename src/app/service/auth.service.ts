@@ -12,6 +12,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
 import * as firebase from 'firebase';
+import { $ } from 'protractor';
 interface user {
   name: string;
   email: string;
@@ -56,14 +57,14 @@ export class AuthService {
         localStorage.setItem('user', JSON.stringify(result.user));
         localStorage.setItem("uid", JSON.stringify(result.user.uid));
         this.NgxSpinnerService.hide();
-        this.toastr.success('Success', 'You are logged in successfully!');
+        // this.toastr.success('Success', 'You are logged in successfully!');
         this.router.navigate(['/dashboard']);
       }).catch(error => {
         this.NgxSpinnerService.show();
         this.isLogin = false;
         this.NgxSpinnerService.hide();
         this.toastr.error('Error', 'Invalid credentials!');
-        location.reload();
+        // location.reload();
 
       });
   }

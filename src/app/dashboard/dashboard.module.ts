@@ -8,6 +8,7 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
 import { AuthService } from '../service/auth.service';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 @NgModule({
     imports: [
         BrowserModule,
@@ -17,6 +18,7 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
         NgxSpinnerModule,
         // BrowserAnimationsModule, // required animations module
         DashboardRoutingModule,
+        BsDatepickerModule.forRoot(),
         NgMultiSelectDropDownModule.forRoot(),
     ],
     declarations: [

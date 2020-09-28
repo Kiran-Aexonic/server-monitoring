@@ -13,6 +13,7 @@ import * as firebase from 'firebase';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 declare var $: any;
 interface user {
   name: string;
@@ -48,6 +49,10 @@ export class DashboardComponent implements OnInit {
   public assigned: any = [];
   public statusRef: any = [];
   taskDateA: any;
+  public frmdate: any;
+  public todate: any;
+  minDate: any;
+  maxDate: any;
   public selectedUser: any;
   dropdownSettings: IDropdownSettings = {};
   dropdownList = [];
@@ -55,6 +60,11 @@ export class DashboardComponent implements OnInit {
   dropdownList2 = [];
   selectedItems = [];
   public disableStatus: any;
+  bsConfig: Partial<BsDatepickerConfig>;
+  dateValidation: any = false;
+  frmdateValidation: any = false;
+  todateValidation: any = false;
+
   constructor(private fb: AngularFireDatabase, private auth: AuthService, public modalService: BsModalService, private spinner: NgxSpinnerService,
     private router: Router, private toastr: ToastrService, private http: HttpClient, public firebaseAuth: AngularFireAuth, private route: Router) {
     this.spinner.show();
@@ -74,6 +84,9 @@ export class DashboardComponent implements OnInit {
   }
   ngOnInit(): void {
     this.spinner.show();
+    this.bsConfig = Object.assign({}, { containerClass: 'theme-dark-blue' }, { dateInputFormat: 'DD/MM/YYYY' });
+    this.minDate = new Date();
+    this.minDate.setDate(this.minDate.getDate());
     this.resetTask();
     setTimeout(() => {
       for (let i = 0; i < this.taskRef.length; i++)
@@ -170,19 +183,49 @@ export class DashboardComponent implements OnInit {
 
   //******************************************************************Create task functions***************************************
   createTask() {
+    if (this.selectedUser != null) {
+      if (this.frmdate == null) {
+        this.dateValidation = true;
+        this.frmdateValidation = true;
+        return false;
+      } else if (this.todate == null) {
+        this.dateValidation = true;
+        this.todateValidation = true;
+        return false;
+      }
+      else if (this.frmdate > this.todate) {
+        this.todate = undefined;
+        $('#date_error').show();
+        return false;
+      }
+    }
     this.spinner.show();
+    let dt = new Date();
+    let time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
     let taskobj: any = {
       taskName: this.taskName,
       taskDetail: this.taskDetail,
-      user: this.selectedUser.uid,
-      username: this.selectedUser.name
+      user: this.selectedUser == null ? null : this.selectedUser.uid,
+      username: this.selectedUser == null ? null : this.selectedUser.name,
+      email: this.selectedUser == null ? '-' : this.selectedUser.email,
+      status: this.selectedUser == null ? null : 'Assigned',
+      from_date: $('#from_date').val(),
+      to_date: $('#to_date').val(),
+      time: time
     };
+    console.log(taskobj)
     this.taskRef.unshift(taskobj);
     this.http.put(this.taskUrl, this.taskRef).subscribe(res => {
       $('#exampleModal').modal('hide');
       this.resetTask();
       this.toastr.success('Success', 'Task created successfully!');
     })
+    if (this.selectedUser != null) {
+      this.completed.unshift(taskobj);
+      let url1 = 'https://servermonitoring-89515.firebaseio.com/completed-task.json';
+      this.http.put(url1, this.completed).subscribe(res => {
+      })
+    }
     setTimeout(() => {
       this.spinner.hide();
     }, 2000);
@@ -193,6 +236,8 @@ export class DashboardComponent implements OnInit {
   }
   resetTask() {
     $("#createTaskForm").trigger("reset");
+    $('#dates').hide();
+
   }
   //******************************************************************Manage task functions***************************************
   manageTask() {
@@ -297,5 +342,17 @@ export class DashboardComponent implements OnInit {
     setTimeout(() => {
       this.spinner.hide();
     }, 1000);
+  }
+  display() {
+    $('#dates').show();
+  }
+  onValueChange() {
+    this.dateValidation = false;
+    this.frmdateValidation = false;
+
+  }
+  onValueChanges() {
+    this.dateValidation = false;
+    this.todateValidation = false;
   }
 }
