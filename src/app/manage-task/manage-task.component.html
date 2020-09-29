@@ -141,8 +141,7 @@
                             <input placeholder="Select To Date" class="form-control" bsDatepicker name="todate"
                                 id="to_date" [(ngModel)]="todate" [bsConfig]="bsConfig" #toDate="ngModel"
                                 [minDate]="minDate" [daysDisabled]="[6,0]" #filterName [maxDate]="maxDate"
-                                placement="top" required>
-                            <!-- (onHidden)="onValueChange($event)" -->
+                                placement="top" (onHidden)="hideError()" required>
                             <span *ngIf="toDate.invalid && (toDate.dirty || toDate.touched)">
                                 <p class="text-danger" *ngIf="toDate.errors.required">Please select to date.</p>
                             </span>

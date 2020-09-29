@@ -26,6 +26,7 @@ export class AuthService {
   userList: AngularFireList<user> = null;
   userRef: any = [];
   public uid: any;
+  private basePath = '/ProfileImages';
   url = 'https://servermonitoring-89515.firebaseio.com/users.json';
   constructor(
     private afAuth: AngularFireAuth,
@@ -35,20 +36,20 @@ export class AuthService {
   ) {
   }
 
-  writeUserData(arr) {
-    var ref = firebase.database().ref();
-    ref.on("value", (snapshot) => {
-      let userRef = [];
-      userRef = snapshot.val();
-      console.log(userRef.values);
-    }, (error) => {
-      console.log("Error: " + error.code);
-    });
-  }
+  // writeUserData(arr) {
+  //   var ref = firebase.database().ref();
+  //   ref.on("value", (snapshot) => {
+  //     let userRef = [];
+  //     userRef = snapshot.val();
+  //   }, (error) => {
+  //     console.log("Error: " + error.code);
+  //   });
+  // }
   logout() {
     this.firebaseAuth.signOut();
     localStorage.removeItem('user');
   }
+
   async signin(email: string, password: string) {
     await this.firebaseAuth.signInWithEmailAndPassword(email, password)
       .then(result => {
@@ -65,7 +66,6 @@ export class AuthService {
         this.NgxSpinnerService.hide();
         this.toastr.error('Error', 'Invalid credentials!');
         // location.reload();
-
       });
   }
   changePassword(email, oldPassword, newPassword) {
@@ -74,7 +74,6 @@ export class AuthService {
       .then((user) => {
         firebase.auth().currentUser.updatePassword(newPassword).then(() => {
           this.toastr.success('Success', 'User updated successfully!');
-          console.log('New password has been saved');
           this.NgxSpinnerService.hide();
         }).catch((err) => {
           console.log(err);

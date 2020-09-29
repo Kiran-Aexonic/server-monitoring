@@ -113,6 +113,18 @@
                             </p>
                         </span>
                     </div>
+                    <div class="form-group pl-5" data-validate="Enter Gender">
+                        <label class="radio-inline pr-4"></label>
+                        <input type="radio" class="mr-2" name="gender" value="male" [checked]="gender == 'male'"
+                            [(ngModel)]="gender">Male
+                        <label class="radio-inline pr-4"></label>
+                        <input type="radio" class="mr-2" name="gender" value="female" [checked]="gender == 'female'"
+                            [(ngModel)]="gender">Female
+                    </div>
+                    <div class="form-group pl-5" data-validate="Enter Gender">
+                        <label class="pl-4">Select picture</label>
+                        <input type="file" (change)="upload($event)" accept=".png,.jpg" class=" pl-5" />
+                    </div>
                     <div class="text-center mb-4">
                         <button class="btn btn-primary w-25" type="button" [disabled]="!createUserForm.valid"
                             (click)="createUser()">
@@ -165,12 +177,6 @@
                             placeholder="Old Password" autocomplete="new-password" #passE="ngModel" minlength="6"
                             (change)="check()" required>
                         <span *ngIf="passE.invalid && (passE.dirty || passE.touched)">
-                            <!-- <p class="text-danger pad-l" *ngIf="passE.errors.required">
-                                Old Password is required.
-                            </p> -->
-                            <!-- <p class="text-danger pad-l" *ngIf="passE.errors?.minlength">
-                                Password must be greater than 6 characters long.
-                            </p> -->
                         </span>
                         <p class="text-danger  pad-l" id="error" style="display: none;">Password doesn't match</p>
                     </div>
@@ -195,11 +201,25 @@
                             <p class="text-danger pad-l" *ngIf="passc.errors.required">
                                 Confirm Password is required.
                             </p>
-                            <!-- <p class="text-danger pad-l" *ngIf="passE.errors?.minlength">
-                                Password must be greater than 6 characters long.
-                            </p> -->
                         </span>
                         <p class="text-danger  pad-l" id="error1" style="display: none;">Password doesn't match</p>
+                    </div>
+                    <div class="form-group pl-5" data-validate="Enter Gender">
+                        <label class="radio-inline pr-4"></label>
+                        <input type="radio" class="mr-2" name="genderE" value="male" [checked]="genderE == 'male'"
+                            [(ngModel)]="genderE">Male
+                        <label class="radio-inline pr-4"></label>
+                        <input type="radio" class="mr-2" name="gender" value="female" [checked]="genderE == 'female'"
+                            [(ngModel)]="gender">Female
+                    </div>
+                    <div class="form-group pl-5" *ngIf="imgE==null">
+                        <input type="file" (change)="upload($event);editImg()" accept=".png,.jpg" class=" pl-4" />
+                    </div>
+                    <div class="form-group pl-5" *ngIf="imgE != null">
+                        <img [src]="imgE" alt="" height="50" width="50" class="ml-4">
+                        <i class="fa fa-edit pl-4" style="font-size: 16px !important;" (click)="uploader.click()"></i>
+                        <input type="file" (change)="upload($event);editImg()" accept=".png,.jpg" class=" pl-5"
+                            #uploader hidden />
                     </div>
                     <div class="text-center mb-4">
                         <button class="btn btn-primary w-25" type="button" [disabled]="editUserForm.invalid"

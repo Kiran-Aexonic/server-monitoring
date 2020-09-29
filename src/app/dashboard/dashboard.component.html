@@ -6,14 +6,28 @@
         <a class=" navbar-brand font-weight-bold">Eseal</a>
         <div class="ml-auto">
             <div class="dropdown">
-                <span class="text-uppercase profile">{{profile}}</span>
-                <div class="dropdown-content">
+                <span class="text-uppercase profile" *ngIf="image==null">{{profile}}</span>
+                <span class="" *ngIf="image!=null"><img src="{{image}}" class="rounded-circle images pull-right"
+                        id="images"></span>
+                <div class="dropdown-content" [ngClass]="image!=null?'mtop-50':''">
                     <a>{{profileName}}</a>
                     <a (click)="logout()"><i class="fa fa-power-off pr-2" aria-hidden="true"></i> Logout</a>
                 </div>
             </div>
         </div>
+        <!-- <div class="dropdown" *ngIf="image!=null">
+            <button class=" dropdown-toggle rounded-circle images btn-image" type="button" id="dropdownMenuButton"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                [style.backgroundImage]="'url('+image+')'">
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="#">Action</a>
+                <a class="dropdown-item" href="#">Another action</a>
+                <a class="dropdown-item" href="#">Something else here</a>
+            </div>
+        </div> -->
     </div>
+
 </nav>
 <div *ngIf="!admin">
     <div class="container mb-5">
@@ -174,7 +188,8 @@
                             <div class="col-sm-9">
                                 <input placeholder="Select From Date" class="form-control" bsDatepicker name="frmdate"
                                     id="from_date" [(ngModel)]="frmdate" [bsConfig]="bsConfig" #frmDate="ngModel"
-                                    [minDate]="minDate" [daysDisabled]="[6,0]" (onHidden)="onValueChange()">
+                                    [minDate]="minDate" [daysDisabled]="[6,0]" (onHidden)="onValueChange()"
+                                    placement="top">
                                 <span *ngIf="dateValidation && frmdateValidation">
                                     <p class="text-danger" *ngIf="dateValidation">Please select from date</p>
                                 </span>
@@ -188,8 +203,8 @@
                             <div class="col-sm-9">
                                 <input placeholder="Select To Date" class="form-control" bsDatepicker name="todate"
                                     id="to_date" [(ngModel)]="todate" [bsConfig]="bsConfig" #toDate="ngModel"
-                                    [minDate]="minDate" [daysDisabled]="[6,0]" #filterName
-                                    (onHidden)="onValueChanges()">
+                                    (onHidden)="hideError()" [minDate]="minDate" [daysDisabled]="[6,0]" #filterName
+                                    placement="top">
                                 <span *ngIf="dateValidation">
                                     <p class="text-danger" *ngIf="dateValidation && todateValidation">Please select to
                                         date.</p>
@@ -202,8 +217,7 @@
                     <div class="form-group row">
                         <div class="col-sm-10 offset-sm-3">
                             <button type="button" class="btn btn-primary" [disabled]="!createTaskForm.valid"
-                                (click)="createTask()">Create
-                                Task</button>
+                                (click)="createTask()">Create Task</button>
                         </div>
                     </div>
                 </form>

@@ -17,6 +17,9 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { SearchPipe } from '../search.pipe';
 import { Pipe, PipeTransform } from '@angular/core';
 import * as firebase from 'firebase';
+import { AngularFireStorage } from '@angular/fire/storage';
+import { Observable } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 
 declare var $: any;
 
@@ -35,6 +38,8 @@ export class ManageUserComponent implements OnInit {
   public taskDetail: any;
   public taskName: any;
   public userRef: any = [];
+  public gender: any;
+  public genderE: any;
   modalRef: BsModalRef;
   public name: any;
   public userName: any;
@@ -64,9 +69,14 @@ export class ManageUserComponent implements OnInit {
   dropdownList = [];
   selectedItems = [];
   public username: any;
+  public basePath = '/uploads';
+
   bsConfig: Partial<BsDatepickerConfig>;
+  downloadURL: Observable<any>;
+  fb1: any;
+  imgE: any;
   constructor(private auth: AuthService, public modalService: BsModalService, private fb: AngularFireDatabase, public firebaseAuth: AngularFireAuth, private toastr: ToastrService,
-    private http: HttpClient, private route: Router,
+    private http: HttpClient, private route: Router, private storage: AngularFireStorage,
     private spinner: NgxSpinnerService) {
     this.spinner.show();
     this.uid = JSON.parse(localStorage.getItem("uid"));
@@ -101,6 +111,42 @@ export class ManageUserComponent implements OnInit {
       this.spinner.hide();
     }, 2000);
   }
+
+
+  upload(event) {
+    this.spinner.show();
+    // console.log(event);
+    this.fb1 = '';
+    var n = Date.now();
+    const file = event.target.files[0];
+    const filePath = `ProfileImages/${n}`;
+    const fileRef = this.storage.ref(filePath);
+    const task = this.storage.upload(`ProfileImages/${n}`, file);
+    task
+      .snapshotChanges()
+      .pipe(
+        finalize(() => {
+          this.downloadURL = fileRef.getDownloadURL();
+          this.downloadURL.subscribe(url => {
+            if (url) {
+              this.fb1 = url;
+              this.imgE = this.fb1;
+            }
+          });
+          this.spinner.hide();
+        })
+      )
+      .subscribe(url => {
+        if (url) {
+          console.log(url);
+        }
+      });
+
+  }
+  editImg() {
+    // this.imgE = this.fb1;
+    // console.log(this.imgE)
+  }
   //******************************************************************back to dashboard functions***************************************
 
   back() {
@@ -123,8 +169,11 @@ export class ManageUserComponent implements OnInit {
           name: this.name,
           password: this.password,
           uid: this.userid,
-          user: res
+          user: res,
+          gender: this.gender,
+          img: this.fb1
         };
+        console.log(obj);
         this.resetUser();
         $('#exampleModal').modal('hide');
         this.userRef.unshift(obj);
@@ -174,7 +223,9 @@ export class ManageUserComponent implements OnInit {
     this.userNameE = row.email;
     this.passwordE = row.password;
     this.editIndex = this.userRef.indexOf(row);
-    this.userEditId = row.uid
+    this.userEditId = row.uid;
+    this.genderE = row.gender;
+    this.imgE = row.img
   }
   editUser() {
     this.spinner.show();
@@ -183,6 +234,8 @@ export class ManageUserComponent implements OnInit {
       name: this.nameE,
       password: this.passwordNew,
       uid: this.userEditId,
+      img: this.imgE,
+      gender: this.genderE
     };
     $('#editUser').modal('hide');
     this.http.put(this.url, this.userRef).subscribe(res => {
@@ -222,4 +275,11 @@ export class ManageUserComponent implements OnInit {
 
     }
   }
+  // this.auth.getFileUploads(6).snapshotChanges().pipe(
+  //   map(changes =>
+  //     changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
+  //   )
+  // ).subscribe(fileUploads => {
+  //   this.fileUploads = fileUploads;
+  // });
 }

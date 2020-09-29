@@ -188,6 +188,9 @@ export class ManageTaskComponent implements OnInit {
       }, 2000);
     }
   }
+  hideError() {
+    $('#date_error').hide();
+  }
   //******************************************************************Reset function***************************************
 
   reset() {

@@ -64,10 +64,12 @@ export class DashboardComponent implements OnInit {
   dateValidation: any = false;
   frmdateValidation: any = false;
   todateValidation: any = false;
+  image: any;
 
   constructor(private fb: AngularFireDatabase, private auth: AuthService, public modalService: BsModalService, private spinner: NgxSpinnerService,
     private router: Router, private toastr: ToastrService, private http: HttpClient, public firebaseAuth: AngularFireAuth, private route: Router) {
     this.spinner.show();
+
     this.uid = JSON.parse(localStorage.getItem("uid"));
     if (this.uid == "fereRvMoNgeXX2XCi2t7uwnVNr32") {
       this.admin = true;
@@ -80,7 +82,10 @@ export class DashboardComponent implements OnInit {
         this.taskRef = res;
       });
     }
-
+    this.fb.list('user').valueChanges().subscribe(res => {
+      this.userRef = res;
+      console.log(this.userRef);
+    })
   }
   ngOnInit(): void {
     this.spinner.show();
@@ -100,9 +105,15 @@ export class DashboardComponent implements OnInit {
     this.fb.list('completed-task').valueChanges().subscribe(res => {
       this.completed = res;
     })
-    this.fb.list('user').valueChanges().subscribe(res => {
-      this.userRef = res;
-    })
+
+    setTimeout(() => {
+      for (let i = 0; i < this.userRef.length; i++) {
+        if (this.uid == this.userRef[i].uid) {
+          this.image = this.userRef[i].img;
+        }
+      }
+    }, 4000);
+    console.log(this.image);
     this.modalService.onHide.subscribe((e) => {
     });
     this.dropdownList2 = [
@@ -125,6 +136,9 @@ export class DashboardComponent implements OnInit {
     setTimeout(() => {
       this.spinner.hide();
     }, 4000);
+  }
+  hideError() {
+    $('#date_error').hide();
   }
   //******************************************************************Assign task functions***************************************
   assign(row) {
@@ -203,6 +217,7 @@ export class DashboardComponent implements OnInit {
     let dt = new Date();
     let time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
     let taskobj: any = {
+      taskId: Date.now(),
       taskName: this.taskName,
       taskDetail: this.taskDetail,
       user: this.selectedUser == null ? null : this.selectedUser.uid,
@@ -213,7 +228,7 @@ export class DashboardComponent implements OnInit {
       to_date: $('#to_date').val(),
       time: time
     };
-    console.log(taskobj)
+    console.log(taskobj);
     this.taskRef.unshift(taskobj);
     this.http.put(this.taskUrl, this.taskRef).subscribe(res => {
       $('#exampleModal').modal('hide');
