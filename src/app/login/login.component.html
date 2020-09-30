@@ -10,8 +10,8 @@
                 </span>
                 <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
                     <input class="input100" type="text" name="userName" [(ngModel)]="userName" (keyup)=" animate()"
-                        pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,4}$" autocomplete="new-password"
-                        #email="ngModel" required>
+                        pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" autocomplete="new-password" #email="ngModel"
+                        required>
                     <span class="focus-input100" data-placeholder="Username"></span>
                     <span class="label-input100">Email</span>
                 </div>

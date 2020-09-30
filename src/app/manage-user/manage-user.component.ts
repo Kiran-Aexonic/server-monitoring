@@ -244,6 +244,8 @@ export class ManageUserComponent implements OnInit {
     $('#editUserForm').trigger('reset');
     setTimeout(() => {
       this.spinner.hide();
+      this.imgE = '';
+      location.reload();
     }, 2000);
 
   }
@@ -275,11 +277,5 @@ export class ManageUserComponent implements OnInit {
 
     }
   }
-  // this.auth.getFileUploads(6).snapshotChanges().pipe(
-  //   map(changes =>
-  //     changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
-  //   )
-  // ).subscribe(fileUploads => {
-  //   this.fileUploads = fileUploads;
-  // });
+
 }
