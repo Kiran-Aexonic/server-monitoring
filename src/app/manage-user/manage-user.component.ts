@@ -228,6 +228,16 @@ export class ManageUserComponent implements OnInit {
     this.imgE = row.img
   }
   editUser() {
+
+    if (this.passwordNew != this.passwordConf) {
+      $('#error1').show();
+      // this.passwordConf = '';
+      return false;
+    }
+    else {
+      $('#error1').hide();
+
+    }
     this.spinner.show();
     this.userRef[this.editIndex] = {
       email: this.userNameE,
@@ -259,7 +269,7 @@ export class ManageUserComponent implements OnInit {
     if (this.passwordNew != this.passwordConf) {
       $('#error1').show();
       // this.passwordConf = '';
-      return;
+      return false;
     }
     else {
       $('#error1').hide();
