@@ -44,6 +44,7 @@ export class DashboardComponent implements OnInit {
   public url = 'https://servermonitoring-89515.firebaseio.com/user.json';
   public taskUrl = 'https://servermonitoring-89515.firebaseio.com/task.json';
   public userRef: any = [];
+  public userRefNew: any = [];
   public taskRef: any = [];
   public taskAssign: any = [];
   public assigned: any = [];
@@ -84,7 +85,7 @@ export class DashboardComponent implements OnInit {
     }
     this.fb.list('user').valueChanges().subscribe(res => {
       this.userRef = res;
-      console.log(this.userRef);
+      this.userRefNew = this.userRef.filter(person => person.status === 'active');
     })
   }
   ngOnInit(): void {
@@ -113,7 +114,6 @@ export class DashboardComponent implements OnInit {
         }
       }
     }, 4000);
-    console.log(this.image);
     this.modalService.onHide.subscribe((e) => {
     });
     this.dropdownList2 = [
@@ -303,25 +303,18 @@ export class DashboardComponent implements OnInit {
       })
     })
   }
-
+  //******************************************************************Select item functions***************************************
   onItemSelect(item: any) {
-    console.log(item);
     this.isDone = true;
   }
   onSelectAll(items: any) {
     console.log(items);
   }
+  //******************************************************************Deselect item functions***************************************
   onDeselect(item) {
-    console.log("item");
     this.isDone = false;
   }
-  logDetail() {
-    this.spinner.show();
-    this.router.navigate(['log-detail']);
-    setTimeout(() => {
-      this.spinner.hide();
-    }, 2000);
-  }
+  //******************************************************************Get status functions***************************************
   getStatus(row) {
     this.spinner.show();
     $('#assignTask').modal('hide');
@@ -358,13 +351,14 @@ export class DashboardComponent implements OnInit {
       this.spinner.hide();
     }, 1000);
   }
+  //******************************************************************Date show functions***************************************
   display() {
     $('#dates').show();
   }
+  //******************************************************************Date validation functions***************************************
   onValueChange() {
     this.dateValidation = false;
     this.frmdateValidation = false;
-
   }
   onValueChanges() {
     this.dateValidation = false;

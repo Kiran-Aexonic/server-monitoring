@@ -158,7 +158,9 @@ button:disabled
   cursor: pointer;
 }
 /* Ends */
-
+.btn-primary:focus{
+  box-shadow: none;
+}
 .fa
 {
   font-size: 50px;

@@ -80,6 +80,7 @@ export class ManageTaskComponent implements OnInit {
     })
     this.fb.list('user').valueChanges().subscribe(res => {
       this.userRef = res;
+      this.userRef = this.userRef.filter(person => person.status === 'active');
     });
     this.fb.list('completed-task').valueChanges().subscribe(res => {
       this.completed = res;
@@ -197,16 +198,6 @@ export class ManageTaskComponent implements OnInit {
     $("#createTaskForm").trigger("reset");
   }
 
-  //******************************************************************Log details function***************************************
-
-  logDetail() {
-    this.spinner.show();
-    $("#assignTask").modal('hide');
-    this.route.navigate(['log-detail']);
-    setTimeout(() => {
-      this.spinner.hide();
-    }, 8000);
-  }
   //******************************************************************Logout function***************************************
   logout() {
     this.spinner.show();

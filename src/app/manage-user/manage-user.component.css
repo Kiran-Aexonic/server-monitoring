@@ -112,6 +112,9 @@ button:disabled
 {
   cursor: not-allowed;
 }
+.btn-primary:focus{
+  box-shadow: none;
+}
 .dropdown .dropbtn {
   font-size: 16px;  
   border: none;
@@ -164,11 +167,23 @@ button:disabled
 
 .fa-edit{
   font-size: 20px !important;
-  cursor: pointer;
 }
 .fa
 {
-  font-size: 50px;
+  font-size: 20px;
+}
+.pointer{
+  cursor: pointer;
+}
+.buttonEdit{
+  color: #000 !important;
+  border:none !important;
+  background:none;
+}
+
+.fa-exclamation-triangle
+{
+  font-size: 50px !important;
 }
 .material-icons
 {

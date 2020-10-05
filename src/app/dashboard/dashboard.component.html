@@ -3,7 +3,7 @@
 </ngx-spinner>
 <nav class="navbar navbar-expand-sm bg-nav navbar-dark mb-5 sticky-top p-3">
     <div class="container-fluid">
-        <a class=" navbar-brand font-weight-bold">Eseal</a>
+        <a class=" navbar-brand font-weight-bold">Sepio Eseal</a>
         <div class="ml-auto">
             <div class="dropdown">
                 <span class="text-uppercase profile" *ngIf="image==null">{{profile}}</span>
@@ -15,19 +15,7 @@
                 </div>
             </div>
         </div>
-        <!-- <div class="dropdown" *ngIf="image!=null">
-            <button class=" dropdown-toggle rounded-circle images btn-image" type="button" id="dropdownMenuButton"
-                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                [style.backgroundImage]="'url('+image+')'">
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-        </div> -->
     </div>
-
 </nav>
 <div *ngIf="!admin">
     <div class="container mb-5">
@@ -144,7 +132,8 @@
             <div class="modal-body">
                 <form id="createTaskForm" #createTaskForm="ngForm" class="p-4">
                     <div class="form-group row">
-                        <label for="inputEmail" class="col-sm-3 col-form-label">Task Name</label>
+                        <label for="inputEmail" class="col-sm-3 col-form-label">Task Name<span
+                                class="text-danger">*</span></label>
                         <div class="col-sm-9">
                             <input type="text" class="form-control" id="inputEmail" name="task" [(ngModel)]="taskName"
                                 #taskname="ngModel" placeholder="Enter Task Name" required>
@@ -156,7 +145,8 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="inputPassword" class="col-sm-3 col-form-label">Task Details</label>
+                        <label for="inputPassword" class="col-sm-3 col-form-label">Task Details<span
+                                class="text-danger">*</span></label>
                         <div class="col-sm-9">
                             <textarea class="form-control" placeholder="Enter Task Details" name="taskDetail"
                                 [(ngModel)]="taskDetail" #taskdetail="ngModel" required></textarea>
@@ -174,7 +164,7 @@
                                 placeholder="Select User" name="selectedUser" [(ngModel)]="selectedUser"
                                 (change)="display()" #userSelect="ngModel">
                                 <option value="" selected="true" disabled>Select User</option>
-                                <option *ngFor="let c of userRef" [ngValue]="c">{{c.name}}</option>
+                                <option *ngFor="let c of userRefNew" [ngValue]="c">{{c.name}}</option>
                             </select>
                             <span *ngIf="userSelect.invalid && (userSelect.dirty || userSelect.touched)">
                                 <p class="text-danger" *ngIf="userSelect.errors.required">Please select user</p>
@@ -184,7 +174,7 @@
                     <div id="dates" style="display: none;">
                         <div class="form-group row">
                             <label for="inputPassword" class="col-sm-3 col-form-label" for="selectedItems">From
-                                Date</label>
+                                Date<span class="text-danger">*</span></label>
                             <div class="col-sm-9">
                                 <input placeholder="Select From Date" class="form-control" bsDatepicker name="frmdate"
                                     id="from_date" [(ngModel)]="frmdate" [bsConfig]="bsConfig" #frmDate="ngModel"
@@ -199,7 +189,7 @@
                         </div>
                         <div class="form-group row">
                             <label for="inputPassword" class="col-sm-3 col-form-label" for="selectedItems">To
-                                Date</label>
+                                Date<span class="text-danger">*</span></label>
                             <div class="col-sm-9">
                                 <input placeholder="Select To Date" class="form-control" bsDatepicker name="todate"
                                     id="to_date" [(ngModel)]="todate" [bsConfig]="bsConfig" #toDate="ngModel"

@@ -3,7 +3,7 @@
 </ngx-spinner>
 <nav class="navbar navbar-expand-sm bg-nav navbar-dark mb-4 sticky-top p-3">
     <div class="container-fluid">
-        <a class=" navbar-brand font-weight-bold">Eseal</a>
+        <a class=" navbar-brand font-weight-bold">Sepio Eseal</a>
         <div class="ml-auto">
             <div class="dropdown">
                 <span class="text-uppercase profile">{{profile}}</span>
@@ -58,7 +58,8 @@
                                 </td>
                                 <td><button class="btn btn-primary text-capitalize" (click)="assign(row)"
                                         data-toggle="modal" data-target="#assignTask"
-                                        [disabled]="row.status == 'Inprogress'">Assign</button></td>
+                                        [disabled]="row.status == 'Inprogress'|| row.status == 'Assigned'">Assign</button>
+                                </td>
                                 <td class="text-center pt-3"><a (click)="view(row)" data-toggle="modal"
                                         data-target="#viewTask"><i class="fa fa-eye"></i></a></td>
                                 <td class="pt-3 text-center"><i class="fa fa-trash" data-toggle="modal"
@@ -92,14 +93,16 @@
             <div class="modal-body">
                 <form id="createTaskForm" #createTaskForm="ngForm" class="p-4">
                     <div class="form-group row">
-                        <label for="inputEmail" class="col-sm-3 col-form-label">Task Name</label>
+                        <label for="inputEmail" class="col-sm-3 col-form-label">Task Name<span
+                                class="text-danger">*</span></label>
                         <div class="col-sm-9">
                             <input type="text" class="form-control" id="inputEmail" name="task" [(ngModel)]="taskName"
                                 placeholder="Enter Task Name">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="inputPassword" class="col-sm-3 col-form-label">Task Details</label>
+                        <label for="inputPassword" class="col-sm-3 col-form-label">Task Details<span
+                                class="text-danger">*</span></label>
                         <div class="col-sm-9">
                             <textarea class="form-control" placeholder="Enter Task Details" name="taskDetail"
                                 [(ngModel)]="taskDetail"></textarea>
@@ -107,7 +110,7 @@
                     </div>
                     <div class="form-group row">
                         <label for="inputPassword" class="col-sm-3 col-form-label" for="selectedItems">Select
-                            User</label>
+                            User<span class="text-danger">*</span></label>
                         <div class="col-sm-9">
                             <select class="selectpicker" data-live-search="true" class="form-control"
                                 placeholder="Select User" name="selectedUser" [(ngModel)]="selectedUser" required
@@ -122,7 +125,7 @@
                     </div>
                     <div class="form-group row">
                         <label for="inputPassword" class="col-sm-3 col-form-label" for="selectedItems">From
-                            Date</label>
+                            Date<span class="text-danger">*</span></label>
                         <div class="col-sm-9">
                             <input placeholder="Select From Date" class="form-control" bsDatepicker name="frmdate"
                                 id="from_date" [(ngModel)]="frmdate" [bsConfig]="bsConfig" #frmDate="ngModel"
@@ -136,7 +139,7 @@
                     </div>
                     <div class="form-group row">
                         <label for="inputPassword" class="col-sm-3 col-form-label" for="selectedItems">To
-                            Date</label>
+                            Date<span class="text-danger">*</span></label>
                         <div class="col-sm-9">
                             <input placeholder="Select To Date" class="form-control" bsDatepicker name="todate"
                                 id="to_date" [(ngModel)]="todate" [bsConfig]="bsConfig" #toDate="ngModel"

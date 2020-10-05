@@ -42,6 +42,7 @@ export class ManageUserComponent implements OnInit {
   public genderE: any;
   modalRef: BsModalRef;
   public name: any;
+  public statusE: any;
   public userName: any;
   public password: any;
   public nameE: any;
@@ -70,7 +71,7 @@ export class ManageUserComponent implements OnInit {
   selectedItems = [];
   public username: any;
   public basePath = '/uploads';
-
+  public userStatus: any = [];
   bsConfig: Partial<BsDatepickerConfig>;
   downloadURL: Observable<any>;
   fb1: any;
@@ -87,35 +88,21 @@ export class ManageUserComponent implements OnInit {
 
   ngOnInit(): void {
     this.spinner.show();
-    this.fb.list('status').valueChanges().subscribe(res => {
-      this.taskStatus = res;
-    })
     this.bsConfig = Object.assign({}, { containerClass: 'theme-dark-blue' }, { dateInputFormat: 'DD/MM/YYYY' });
     var x = JSON.parse(localStorage.getItem("user"));
     this.profile = x.email.charAt(0);
     this.profileName = x.email;
-    this.spinner.show();
-    this.fb.list('task').valueChanges().subscribe(res => {
-      this.taskRef = res;
-    })
     this.fb.list('user').valueChanges().subscribe(res => {
       this.userRef = res;
     })
-    //Assign task 
-    this.fb.list('assign').valueChanges().subscribe(res => {
-      this.assignRef = res;
-    })
-    $(".theme-green .bs-datepicker-head").css(
-      "background-color", "#072e58");
     setTimeout(() => {
       this.spinner.hide();
     }, 2000);
   }
 
-
+  //******************************************************************Image upload functions***************************************
   upload(event) {
     this.spinner.show();
-    // console.log(event);
     this.fb1 = '';
     var n = Date.now();
     const file = event.target.files[0];
@@ -143,12 +130,7 @@ export class ManageUserComponent implements OnInit {
       });
 
   }
-  editImg() {
-    // this.imgE = this.fb1;
-    // console.log(this.imgE)
-  }
   //******************************************************************back to dashboard functions***************************************
-
   back() {
     this.spinner.show();
     this.route.navigate(['dashboard']);
@@ -171,9 +153,9 @@ export class ManageUserComponent implements OnInit {
           uid: this.userid,
           user: res,
           gender: this.gender,
-          img: this.fb1
+          img: this.fb1,
+          status: "active"
         };
-        console.log(obj);
         this.resetUser();
         $('#exampleModal').modal('hide');
         this.userRef.unshift(obj);
@@ -207,6 +189,25 @@ export class ManageUserComponent implements OnInit {
   resetUser() {
     $("#createUserForm").trigger("reset");
   }
+  //******************************************************************Get status function***************************************
+
+  getStatus(row) {
+    this.userStatus = row;
+  }
+  //******************************************************************change status function***************************************
+  changeStatus() {
+    this.spinner.show();
+    this.userStatus.status = this.userStatus.status == 'active' ? 'inactive' : 'active';
+    for (let i = 0; i < this.userRef.length; i++)
+      if (this.userRef[i].uid == this.userStatus.uid) {
+        this.userRef[i].status = this.userStatus.status;
+      }
+    $('#changeStatus').modal('hide');
+    this.http.put(this.url, this.userRef).subscribe(res => {
+      this.spinner.hide();
+      this.toastr.success('Success', 'User status changed successfully!');
+    })
+  }
   //******************************************************************Logout function***************************************
   logout() {
     this.spinner.show();
@@ -216,7 +217,7 @@ export class ManageUserComponent implements OnInit {
     this.route.navigate(['/login']);
     this.spinner.hide();
   }
-
+  //******************************************************************Get data for edit function***************************************
   edit(row) {
     console.log(row)
     this.nameE = row.name;
@@ -225,18 +226,17 @@ export class ManageUserComponent implements OnInit {
     this.editIndex = this.userRef.indexOf(row);
     this.userEditId = row.uid;
     this.genderE = row.gender;
-    this.imgE = row.img
+    this.imgE = row.img;
+    this.statusE = row.status;
   }
+  //****************************************************************** edit function***************************************
   editUser() {
-
     if (this.passwordNew != this.passwordConf) {
       $('#error1').show();
-      // this.passwordConf = '';
       return false;
     }
     else {
       $('#error1').hide();
-
     }
     this.spinner.show();
     this.userRef[this.editIndex] = {
@@ -245,7 +245,8 @@ export class ManageUserComponent implements OnInit {
       password: this.passwordNew,
       uid: this.userEditId,
       img: this.imgE,
-      gender: this.genderE
+      gender: this.genderE,
+      status: this.statusE
     };
     $('#editUser').modal('hide');
     this.http.put(this.url, this.userRef).subscribe(res => {
@@ -257,18 +258,18 @@ export class ManageUserComponent implements OnInit {
       this.imgE = '';
       location.reload();
     }, 2000);
-
   }
+  //****************************************************************** Reset form function***************************************
   resetForm() {
     $('#editUserForm').trigger('reset');
     $('#error1').hide();
     $('#error').hide();
 
   }
+  //****************************************************************** Check new password and confirm password function***************************************
   compare() {
     if (this.passwordNew != this.passwordConf) {
       $('#error1').show();
-      // this.passwordConf = '';
       return false;
     }
     else {
@@ -276,6 +277,7 @@ export class ManageUserComponent implements OnInit {
 
     }
   }
+  //****************************************************************** Check password function***************************************
   check() {
     if (this.passwordOld != this.passwordE) {
       $('#error').show();
@@ -284,8 +286,6 @@ export class ManageUserComponent implements OnInit {
     }
     else {
       $('#error').hide();
-
     }
   }
-
 }

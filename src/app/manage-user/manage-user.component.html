@@ -3,7 +3,7 @@
 </ngx-spinner>
 <nav class="navbar navbar-expand-sm bg-nav navbar-dark mb-5 sticky-top p-3">
     <div class="container-fluid">
-        <a class=" navbar-brand font-weight-bold">Eseal</a>
+        <a class=" navbar-brand font-weight-bold">Sepio Eseal</a>
         <div class="ml-auto">
             <div class="dropdown">
                 <span class="text-uppercase profile">{{profile}}</span>
@@ -29,8 +29,7 @@
                         </div>
                         <div class="col-md-4 pb-3">
                             <button class="btn btn-primary pull-right" data-toggle="modal"
-                                data-target="#exampleModal">Add
-                                User</button>
+                                data-target="#exampleModal">Add User</button>
                         </div>
                         <div class="col-md-4">
                             <input type="text" class="form-control" [(ngModel)]="emailSearch"
@@ -40,9 +39,11 @@
                     <table class="table table-hover table-responsive mb-0 p-5">
                         <thead>
                             <tr>
-                                <th class="th-lg w-100 ">User Name</th>
-                                <th class="th-lg w-17">Email</th>
-                                <th class="th-lg w-17">Action</th>
+                                <th class="th-lg w-20 ">User Name</th>
+                                <th class="th-lg w-20">Email</th>
+                                <th class="th-lg w-20 text-center">User Status</th>
+                                <!-- <th class="th-lg w-20">Change Status</th> -->
+                                <th class="th-lg w-20 text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -50,8 +51,18 @@
                                 *ngFor="let row of userRef | customerEmailFilter:emailSearch | paginate: { itemsPerPage: 6, currentPage: p }  let i = index">
                                 <td class="text-capitalize pt-3">{{row.name}}</td>
                                 <td class="pt-3">{{row.email}}</td>
-                                <td class="pt-3 text-center"><i class="fa fa-edit" data-toggle="modal"
-                                        data-target="#editUser" (click)="edit(row)"></i></td>
+                                <td class="text-capitalize pt-3 text-center pointer" data-toggle="modal"
+                                    data-target="#changeStatus" (click)="getStatus(row)">
+                                    <span class="badge-pill p-1 pr-2 pl-2 badge-success fs-12"
+                                        *ngIf="row.status == 'active'">{{row.status}}</span>
+                                    <span class="badge-pill p-1 pr-2 pl-2 badge-danger fs-12"
+                                        *ngIf="row.status == 'inactive'">{{row.status}}</span>
+                                </td>
+                                <!-- <td class="pt-3 text-center"><i class="fa fa-retweet" data-toggle="modal"
+                                        data-target="#changeStatus" (click)="getStatus(row)"></i></td> -->
+                                <td class="pt-3 text-center"><button [disabled]="row.status == 'inactive'"
+                                        class="buttonEdit" data-toggle="modal" data-target="#editUser"
+                                        (click)="edit(row)"><i class="fa fa-edit"></i></button></td>
                             </tr>
                         </tbody>
                     </table>
@@ -213,13 +224,13 @@
                             [(ngModel)]="gender">Female
                     </div>
                     <div class="form-group pl-5" *ngIf="imgE==null">
-                        <input type="file" (change)="upload($event);editImg()" accept=".png,.jpg" class=" pl-4" />
+                        <input type="file" (change)="upload($event)" accept=".png,.jpg" class=" pl-4" />
                     </div>
                     <div class="form-group pl-5" *ngIf="imgE != null">
                         <img [src]="imgE" alt="" height="50" width="50" class="ml-4">
                         <i class="fa fa-edit pl-4" style="font-size: 16px !important;" (click)="uploader.click()"></i>
-                        <input type="file" (change)="upload($event);editImg()" accept=".png,.jpg" class=" pl-5"
-                            #uploader hidden />
+                        <input type="file" (change)="upload($event)" accept=".png,.jpg" class=" pl-5" #uploader
+                            hidden />
                     </div>
                     <div class="text-center mb-4">
                         <button class="btn btn-primary w-25" type="button" [disabled]="editUserForm.invalid"
@@ -228,6 +239,29 @@
                         </button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ************************************************Modal for change user status**************************************************************** -->
+<div class="modal fade" id="changeStatus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Change User Status</h5>
+                <button type="button" class="close  text-black-50" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <i class="fa fa-exclamation-triangle text-danger" aria-hidden="true"></i>
+                <h5 class="mt-4 mb-4">Current user status: <span
+                        [ngClass]="userStatus.status== 'active'?'text-success':'text-danger'"
+                        class="text-capitalize font-weight-bold">{{userStatus.status}}</span></h5>
+                <h5 class="mt-4 mb-4">Are you sure to change user status?</h5>
+                <button class="btn btn-danger  mr-4" data-dismiss="modal">No</button>
+                <button class="btn btn-success" (click)="changeStatus()">Yes</button>
             </div>
         </div>
     </div>
