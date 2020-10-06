@@ -213,6 +213,11 @@ export class DashboardComponent implements OnInit {
         return false;
       }
     }
+    for (let i = 0; i < this.taskRef.length; i++)
+      if (this.taskRef[i].taskName == this.taskName && this.taskRef[i].taskDetail == this.taskDetail) {
+        this.toastr.error('Error', 'Task is created previously!');
+        return false;
+      }
     this.spinner.show();
     let dt = new Date();
     let time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
@@ -223,7 +228,7 @@ export class DashboardComponent implements OnInit {
       user: this.selectedUser == null ? null : this.selectedUser.uid,
       username: this.selectedUser == null ? null : this.selectedUser.name,
       email: this.selectedUser == null ? '-' : this.selectedUser.email,
-      status: this.selectedUser == null ? null : 'Assigned',
+      status: this.selectedUser == null ? '-' : 'Assigned',
       from_date: $('#from_date').val(),
       to_date: $('#to_date').val(),
       time: time

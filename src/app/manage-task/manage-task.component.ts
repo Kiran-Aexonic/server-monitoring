@@ -13,6 +13,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
+import { TaskSearchPipe } from '../service/taskSearch.pipe';
 declare var $: any;
 import * as _ from 'lodash';
 @Component({
@@ -53,6 +54,7 @@ export class ManageTaskComponent implements OnInit {
   selectedItems = [];
   public username: any;
   indexDelete: any;
+  public searchField: any;
   bsConfig: Partial<BsDatepickerConfig>;
   constructor(private auth: AuthService, public modalService: BsModalService, private fb: AngularFireDatabase, private toastr: ToastrService,
     private http: HttpClient, private route: Router,
@@ -77,6 +79,7 @@ export class ManageTaskComponent implements OnInit {
     this.spinner.show();
     this.fb.list('task').valueChanges().subscribe(res => {
       this.taskRef = res;
+      console.log(this.taskRef)
     })
     this.fb.list('user').valueChanges().subscribe(res => {
       this.userRef = res;
@@ -129,6 +132,7 @@ export class ManageTaskComponent implements OnInit {
 
   assign(row) {
     this.reset();
+    console.log(row)
     this.taskNamef = row.taskName;
     this.taskDetailf = row.taskDetail;
     this.taskName = row.taskName;
@@ -210,6 +214,7 @@ export class ManageTaskComponent implements OnInit {
 
   //******************************************************************View details function***************************************
   view(row) {
+    console.log(row);
     this.viewRef = [];
     this.taskAssign = [];
     this.taskDetailA = row.taskDetail;
@@ -222,7 +227,8 @@ export class ManageTaskComponent implements OnInit {
       if (this.completed[i].taskName == this.taskNameA) {
         this.taskAssign.push(this.completed[i]);
       }
-    this.taskAssign = _.sortBy(this.taskAssign, ['from_date', 'time']).reverse();
+    // this.taskAssign = _.sortBy(this.taskAssign, ['from_date', 'time']).reverse();
+    this.taskAssign = _.orderBy(this.taskAssign, ['from_date', 'time'], ['asc', 'desc']);
   }
   //******************************************************************Delete function***************************************
   deleteIndex(row) {

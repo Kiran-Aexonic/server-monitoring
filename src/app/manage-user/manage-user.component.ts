@@ -94,6 +94,7 @@ export class ManageUserComponent implements OnInit {
     this.profileName = x.email;
     this.fb.list('user').valueChanges().subscribe(res => {
       this.userRef = res;
+      console.log(this.userRef[1].img)
     })
     setTimeout(() => {
       this.spinner.hide();
@@ -102,10 +103,20 @@ export class ManageUserComponent implements OnInit {
 
   //******************************************************************Image upload functions***************************************
   upload(event) {
-    this.spinner.show();
     this.fb1 = '';
     var n = Date.now();
-    const file = event.target.files[0];
+    let file = event.target.files[0];
+    console.log(event)
+    // let fsize = event.target.files[0].size;
+    // fsize = Math.round((fsize / 1024));
+    // if (fsize >= 4096) {
+    //   this.toastr.error('Error', "File too Big, please select a file less than 4mb");
+    //   return false;
+    // } else if (fsize < 2048) {
+    //   this.toastr.error('Error', "File too small, please select a file greater than 2mb");
+    //   return false;
+    // } else {
+    this.spinner.show();
     const filePath = `ProfileImages/${n}`;
     const fileRef = this.storage.ref(filePath);
     const task = this.storage.upload(`ProfileImages/${n}`, file);
@@ -128,7 +139,7 @@ export class ManageUserComponent implements OnInit {
           console.log(url);
         }
       });
-
+    // }
   }
   //******************************************************************back to dashboard functions***************************************
   back() {

@@ -11,6 +11,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { TaskSearchPipe } from '../service/taskSearch.pipe';
 @NgModule({
     imports: [
         BrowserModule,
@@ -24,7 +25,8 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
         BsDatepickerModule.forRoot(),
     ],
     declarations: [
-        ManageTaskComponent
+        ManageTaskComponent,
+        TaskSearchPipe
     ],
     providers: [AuthService],
     bootstrap: [ManageTaskComponent]

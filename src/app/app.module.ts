@@ -24,6 +24,8 @@ import { ManageUserModule } from './manage-user/manage-user.module';
 import { LogDetailModule } from './log-detail/log-detail.module';
 import { SearchPipe } from './search.pipe';
 import { ManageUserComponent } from './manage-user/manage-user.component';
+import { TaskSearchPipe } from './service/taskSearch.pipe';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -52,6 +54,6 @@ import { ManageUserComponent } from './manage-user/manage-user.component';
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
   providers: [AuthService, AuthenticationGuard],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule { }

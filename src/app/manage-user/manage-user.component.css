@@ -108,6 +108,9 @@ nav{
   i.fa.fa-power-off.pr-2 {
     font-size: 20px !important;
   }
+  .border1x{
+    border: 1px solid grey;
+  }
 button:disabled
 {
   cursor: not-allowed;

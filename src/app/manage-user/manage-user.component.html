@@ -39,17 +39,20 @@
                     <table class="table table-hover table-responsive mb-0 p-5">
                         <thead>
                             <tr>
-                                <th class="th-lg w-20 ">User Name</th>
+                                <th class="th-lg w-50 pl-5">User Name</th>
                                 <th class="th-lg w-20">Email</th>
                                 <th class="th-lg w-20 text-center">User Status</th>
-                                <!-- <th class="th-lg w-20">Change Status</th> -->
                                 <th class="th-lg w-20 text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr
                                 *ngFor="let row of userRef | customerEmailFilter:emailSearch | paginate: { itemsPerPage: 6, currentPage: p }  let i = index">
-                                <td class="text-capitalize pt-3">{{row.name}}</td>
+                                <td class="text-capitalize pt-3"><img [src]="row.img" *ngIf="row.img != undefined"
+                                        class="rounded-circle" height="40" width="40"> <img
+                                        src="../../assets/img/user.png" class="rounded-circle"
+                                        *ngIf="row.img == undefined" height="40" width="40" alt=""><span> &nbsp;
+                                        &nbsp;</span>{{row.name}}</td>
                                 <td class="pt-3">{{row.email}}</td>
                                 <td class="text-capitalize pt-3 text-center pointer" data-toggle="modal"
                                     data-target="#changeStatus" (click)="getStatus(row)">
@@ -58,8 +61,6 @@
                                     <span class="badge-pill p-1 pr-2 pl-2 badge-danger fs-12"
                                         *ngIf="row.status == 'inactive'">{{row.status}}</span>
                                 </td>
-                                <!-- <td class="pt-3 text-center"><i class="fa fa-retweet" data-toggle="modal"
-                                        data-target="#changeStatus" (click)="getStatus(row)"></i></td> -->
                                 <td class="pt-3 text-center"><button [disabled]="row.status == 'inactive'"
                                         class="buttonEdit" data-toggle="modal" data-target="#editUser"
                                         (click)="edit(row)"><i class="fa fa-edit"></i></button></td>
@@ -103,7 +104,7 @@
 
                     <div class="form-group" data-validate="Enter email">
                         <input type="text" name="userName" [(ngModel)]="userName" placeholder="Email"
-                            pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" class="form-control w-75 m-auto"
+                            pattern="^[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" class="form-control w-75 m-auto"
                             autocomplete="new-password" #email="ngModel" required>
                         <span *ngIf="email.errors && (email.invalid && email.touched)">
                             <p class="text-danger pad-l" *ngIf="email.errors.required">Email is

@@ -23,9 +23,21 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
-                    <div class="row  pt-4">
+                    <!-- <div class="row  pt-4">
                         <div class="col-md-12 text-center">
                             <h4 class="">Task List</h4>
+                        </div>
+                    </div> -->
+                    <div class="row pl-5  pt-3  pr-5">
+                        <div class="col-md-4">
+                            <h4>Task List</h4>
+                        </div>
+                        <div class="col-md-4 pb-3">
+
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" [(ngModel)]="searchField"
+                                placeholder="&#xF002; Search" style="font-family: FontAwesome;" />
                         </div>
                     </div>
                     <table class="table table-hover table-responsive mb-0 p-5">
@@ -41,7 +53,7 @@
                         </thead>
                         <tbody>
                             <tr
-                                *ngFor="let row of taskRef | paginate: { itemsPerPage: 5, currentPage: p } let i = index">
+                                *ngFor="let row of taskRef |  taskSearchfilter:searchField | paginate: { itemsPerPage: 5, currentPage: p } ">
                                 <td class="text-capitalize pt-3">
                                     {{row.taskName}}</td>
                                 <td class="pt-3 ">
@@ -53,7 +65,7 @@
                                     <span class="badge-pill p-1 badge-success fs-12"
                                         *ngIf="row.status == 'Complete'">{{row.status}}</span>
                                     <span *ngIf="row.status == 'Assigned'"
-                                        class=" badge-pill p-1 badge-info fs-12">Assigned</span>
+                                        class=" badge-pill p-1 badge-info fs-12">{{row.status}}</span>
                                     <span *ngIf="row.status == null" class="text-center">-</span>
                                 </td>
                                 <td><button class="btn btn-primary text-capitalize" (click)="assign(row)"
@@ -67,7 +79,9 @@
                             </tr>
                         </tbody>
                     </table>
-                    <p class="p-3 text-center fs-18" *ngIf="taskRef.length == 0">No data found!</p>
+                    <p class="p-3 text-center fs-18" *ngIf="(taskRef | taskSearchfilter:searchField) == false">No
+                        data found!</p>
+                    <!-- <p class="p-3 text-center fs-18" *ngIf="taskRef.length == 0">No data found!</p> -->
                     <!-- *************************************************** Pagination *************************************************************-->
                     <div class="container mt-2 text-center">
                         <pagination-controls (pageChange)="p = $event"></pagination-controls>
