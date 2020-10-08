@@ -384,7 +384,6 @@ export class DashboardComponent implements OnInit {
     let time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
     let datestring = dt.getDate() + '/' + (dt.getMonth() + 1) + '/' + dt.getFullYear()
     var Obj = _.find(this.userRef, { uid: this.uid });
-    console.log(Obj);
     let cmt = {
       comment: this.comment,
       time: time,
@@ -392,7 +391,6 @@ export class DashboardComponent implements OnInit {
       userName: Obj.name,
       taskId: this.taskId
     }
-    console.log(cmt)
     this.commentRef.unshift(cmt);
     $('#commet').modal('hide');
     this.http.put(this.commentUrl, this.commentRef).subscribe(res => {
@@ -403,7 +401,6 @@ export class DashboardComponent implements OnInit {
   //******************************************************************Get task id function***************************************
 
   getTaskId(row) {
-    console.log(row);
     this.taskId = row.taskId;
   }
   //******************************************************************Reset comment function***************************************

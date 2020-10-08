@@ -241,7 +241,7 @@
             </span>
             <div class="form-group" data-validate="Enter username">
                 <input type="text" name="userName" [(ngModel)]="userName" (keyup)=" animate()" placeholder="Username"
-                    pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,4}$" class="form-control w-75 m-auto"
+                    pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" class="form-control w-75 m-auto"
                     autocomplete="new-password" #email="ngModel" required>
             </div>
             <span *ngIf="email.errors && (email.invalid && email.touched)">

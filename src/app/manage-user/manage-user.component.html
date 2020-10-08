@@ -176,7 +176,7 @@
                     <div class="form-group" data-validate="Enter email">
                         <input type="text" name="userNameE" [(ngModel)]="userNameE" placeholder="Email"
                             pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,4}$" class="form-control w-75 m-auto"
-                            autocomplete="new-password" #emailE="ngModel" required disabled>
+                            autocomplete="new-password" #emailE="ngModel" disabled>
                         <span *ngIf="emailE.errors && (emailE.invalid && emailE.touched)">
                             <p class="text-danger pad-l" *ngIf="emailE.errors.required">Email is
                                 required.</p>
@@ -187,15 +187,14 @@
                     <div class="form-group" data-validate="Enter old password">
                         <input type="password" name="passo" [(ngModel)]="passwordOld" class="form-control w-75 m-auto"
                             placeholder="Old Password" autocomplete="new-password" #passE="ngModel" minlength="6"
-                            (change)="check()" required>
+                            (change)="check()">
                         <span *ngIf="passE.invalid && (passE.dirty || passE.touched)">
                         </span>
                         <p class="text-danger  pad-l" id="error" style="display: none;">Password doesn't match</p>
                     </div>
                     <div class="form-group" data-validate="Enter new password">
                         <input type="password" name="passn" [(ngModel)]="passwordNew" class="form-control w-75 m-auto"
-                            placeholder="New Password" autocomplete="new-password" #passn="ngModel" minlength="6"
-                            required>
+                            placeholder="New Password" autocomplete="new-password" #passn="ngModel" minlength="6">
                         <span *ngIf="passn.invalid && (passn.dirty || passn.touched)">
                             <p class="text-danger pad-l" *ngIf="passn.errors.required">
                                 New Password is required.
@@ -208,7 +207,7 @@
                     <div class="form-group" data-validate="Enter confirm password">
                         <input type="password" name="passc" [(ngModel)]="passwordConf" class="form-control w-75 m-auto"
                             placeholder="Confirm Password" autocomplete="new-password" #passc="ngModel" minlength="6"
-                            (keyup)="compare()" required>
+                            (keyup)="compare()">
                         <span *ngIf="passc.invalid && (passc.dirty || passc.touched)">
                             <p class="text-danger pad-l" *ngIf="passc.errors.required">
                                 Confirm Password is required.
@@ -221,8 +220,8 @@
                         <input type="radio" class="mr-2" name="genderE" value="male" [checked]="genderE == 'male'"
                             [(ngModel)]="genderE">Male
                         <label class="radio-inline pr-4"></label>
-                        <input type="radio" class="mr-2" name="gender" value="female" [checked]="genderE == 'female'"
-                            [(ngModel)]="gender">Female
+                        <input type="radio" class="mr-2" name="genderE" value="female" [checked]="genderE == 'female'"
+                            [(ngModel)]="genderE">Female
                     </div>
                     <div class="form-group pl-5" *ngIf="imgE==null">
                         <input type="file" (change)="upload($event)" accept=".png,.jpg" class=" pl-4" />
@@ -234,8 +233,7 @@
                             hidden />
                     </div>
                     <div class="text-center mb-4">
-                        <button class="btn btn-primary w-25" type="button" [disabled]="editUserForm.invalid"
-                            (click)="editUser()">
+                        <button class="btn btn-primary w-25" type="button" [disabled]="enableEdit" (click)="editUser()">
                             Update
                         </button>
                     </div>

@@ -165,6 +165,15 @@ button:disabled
   font-size:20px !important ;
 cursor: pointer;
 }
+.textProperty{
+  white-space: nowrap; 
+  width: 50px; 
+  overflow: hidden;
+  text-overflow: ellipsis; 
+}
+.textProperty:hover{
+  overflow: visible;
+}
 .fa
 {
   font-size: 50px;

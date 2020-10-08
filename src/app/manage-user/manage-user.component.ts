@@ -41,6 +41,7 @@ export class ManageUserComponent implements OnInit {
   public gender: any;
   public genderE: any;
   modalRef: BsModalRef;
+  public enableEdit = false;
   public name: any;
   public statusE: any;
   public userName: any;
@@ -253,22 +254,23 @@ export class ManageUserComponent implements OnInit {
     this.userRef[this.editIndex] = {
       email: this.userNameE,
       name: this.nameE,
-      password: this.passwordNew,
+      password: this.passwordNew == undefined ? this.passwordE : this.passwordNew,
       uid: this.userEditId,
       img: this.imgE,
       gender: this.genderE,
       status: this.statusE
     };
+    console.log(this.userRef[this.editIndex])
     $('#editUser').modal('hide');
-    this.http.put(this.url, this.userRef).subscribe(res => {
-    })
-    this.auth.changePassword(this.userNameE, this.passwordE, this.passwordNew)
-    $('#editUserForm').trigger('reset');
-    setTimeout(() => {
-      this.spinner.hide();
-      this.imgE = '';
-      location.reload();
-    }, 2000);
+    // this.http.put(this.url, this.userRef).subscribe(res => {
+    // })
+    // this.auth.changePassword(this.userNameE, this.passwordE, this.passwordNew)
+    // $('#editUserForm').trigger('reset');
+    // setTimeout(() => {
+    //   this.spinner.hide();
+    //   this.imgE = '';
+    //   location.reload();
+    // }, 2000);
   }
   //****************************************************************** Reset form function***************************************
   resetForm() {
@@ -285,11 +287,12 @@ export class ManageUserComponent implements OnInit {
     }
     else {
       $('#error1').hide();
-
+      this.enableEdit = false;
     }
   }
   //****************************************************************** Check password function***************************************
   check() {
+    this.enableEdit = true;
     if (this.passwordOld != this.passwordE) {
       $('#error').show();
       this.passwordOld = '';
