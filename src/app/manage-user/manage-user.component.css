@@ -108,6 +108,9 @@ nav{
   i.fa.fa-power-off.pr-2 {
     font-size: 20px !important;
   }
+  button:focus {
+    outline: none !important;
+}
   .border1x{
     border: 1px solid grey;
   }

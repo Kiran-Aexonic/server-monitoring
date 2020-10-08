@@ -161,6 +161,10 @@ button:disabled
 .btn-primary:focus{
   box-shadow: none;
 }
+.fa-comments{
+  font-size:20px !important ;
+cursor: pointer;
+}
 .fa
 {
   font-size: 50px;

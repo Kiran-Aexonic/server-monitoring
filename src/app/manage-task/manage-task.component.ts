@@ -28,8 +28,11 @@ export class ManageTaskComponent implements OnInit {
   public viewRef: any = [];
   public taskAssign: any = [];
   public taskStatus: any = [];
+  public commentRef: any = [];
+  public taskId: any;
   public assignRef: any = [];
   public completed: any = [];
+  public comment: any = [];
   public taskDetail: any;
   public taskName: any;
   public taskDetailf: any;
@@ -88,6 +91,9 @@ export class ManageTaskComponent implements OnInit {
     this.fb.list('completed-task').valueChanges().subscribe(res => {
       this.completed = res;
     })
+    this.fb.list('comment').valueChanges().subscribe(res => {
+      this.comment = res;
+    });
     $(".theme-green .bs-datepicker-head").css(
       "background-color", "#072e58");
     setTimeout(() => {
@@ -228,7 +234,7 @@ export class ManageTaskComponent implements OnInit {
         this.taskAssign.push(this.completed[i]);
       }
     // this.taskAssign = _.sortBy(this.taskAssign, ['from_date', 'time']).reverse();
-    this.taskAssign = _.orderBy(this.taskAssign, ['from_date', 'time'], ['asc', 'desc']);
+    // this.taskAssign = _.orderBy(this.taskAssign, ['from_date', 'time'], ['desc', 'desc']);
   }
   //******************************************************************Delete function***************************************
   deleteIndex(row) {
@@ -245,5 +251,14 @@ export class ManageTaskComponent implements OnInit {
     setTimeout(() => {
       this.spinner.hide();
     }, 2000);
+  }
+  getTaskId(row) {
+    this.commentRef = [];
+    console.log(row)
+    for (let i = 0; i < this.comment.length; i++)
+      if (this.comment[i].taskId == row.taskId) {
+        this.commentRef.push(this.comment[i]);
+      }
+    console.log(typeof this.commentRef)
   }
 }

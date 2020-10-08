@@ -15,6 +15,10 @@
 {
   font-size: 50px;
 }
+.fa-comments{
+  font-size: 30px !important;
+  cursor: pointer;
+}
 .fs-12
 {
   font-size: 12px !important;
@@ -43,6 +47,10 @@
 }
 button{
   cursor: pointer;
+}
+
+button:focus{
+  border:none;
 }
 button:disabled{
   cursor: not-allowed;

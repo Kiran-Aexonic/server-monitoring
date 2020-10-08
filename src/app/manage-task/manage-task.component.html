@@ -48,6 +48,7 @@
                                 <th class="th-lg ">Status</th>
                                 <th class="th-lg  ">Action</th>
                                 <th class=" ">View</th>
+                                <th class="th-lg">Comment</th>
                                 <th class=" ">Delete</th>
                             </tr>
                         </thead>
@@ -60,20 +61,23 @@
                                     <span class="" *ngIf="row.email != '-'">{{row.email}}</span>
                                     <span class="" *ngIf="row.email == '-'" class="ml-5">-</span></td>
                                 <td class="text-capitalize pt-3 text-center">
-                                    <span class="badge-pill p-1 badge-warning fs-12"
+                                    <span class="badge-pill p-1 badge-warning fs-12 pr-2 pl-2"
                                         *ngIf="row.status == 'Inprogress'">{{row.status}}</span>
-                                    <span class="badge-pill p-1 badge-success fs-12"
+                                    <span class="badge-pill p-1 badge-success fs-12 pr-2 pl-2"
                                         *ngIf="row.status == 'Complete'">{{row.status}}</span>
                                     <span *ngIf="row.status == 'Assigned'"
-                                        class=" badge-pill p-1 badge-info fs-12">{{row.status}}</span>
+                                        class=" badge-pill p-1 badge-info fs-12 pr-2 pl-2">{{row.status}}</span>
                                     <span *ngIf="row.status == null" class="text-center">-</span>
                                 </td>
                                 <td><button class="btn btn-primary text-capitalize" (click)="assign(row)"
                                         data-toggle="modal" data-target="#assignTask"
                                         [disabled]="row.status == 'Inprogress'|| row.status == 'Assigned'">Assign</button>
                                 </td>
+
                                 <td class="text-center pt-3"><a (click)="view(row)" data-toggle="modal"
                                         data-target="#viewTask"><i class="fa fa-eye"></i></a></td>
+                                <td class="text-center pt-3"><a data-toggle="modal" data-target="#comment"
+                                        (click)="getTaskId(row)"><i class="fa fa-comments"></i></a></td>
                                 <td class="pt-3 text-center"><i class="fa fa-trash" data-toggle="modal"
                                         (click)="deleteIndex(row)" data-target="#deleteTask"></i></td>
                             </tr>
@@ -274,6 +278,44 @@
                 <h5 class="mt-4 mb-4">Are you sure to delete task?</h5>
                 <button class="btn btn-success  mr-4" data-dismiss="modal">Cancel</button>
                 <button class="btn btn-danger" (click)="delete()">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ************************************************Modal for comment**************************************************************** -->
+<div class="modal fade" id="comment" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content modal-width">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Comment</h5>
+                <button type="button" class="close  text-black-50" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="commetForm" #commetForm="ngForm" class="p-4">
+                    <table class="table-responsive" *ngIf="commentRef.length != 0">
+                        <thead>
+                            <tr class="borderbtm">
+                                <th class="th-lg w-20">Comment By</th>
+                                <th class="th-lg w-25">Comment</th>
+                                <th class=" w-20">Date</th>
+                                <th class="w-20">Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let row of commentRef">
+                                <td class="text-capitalize pt-3">{{row.userName}}</td>
+                                <td class="text-capitalize pt-3">{{row.comment}}</td>
+                                <td class="text-capitalize pt-3">{{row.date}}</td>
+                                <td class="text-capitalize pt-3">{{row.time}}</td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+                    <h6 *ngIf="commentRef.length == 0">No comments yet!</h6>
+
+                </form>
             </div>
         </div>
     </div>

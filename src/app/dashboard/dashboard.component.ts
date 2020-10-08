@@ -14,6 +14,8 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
+import * as _ from 'lodash';
+
 declare var $: any;
 interface user {
   name: string;
@@ -43,7 +45,9 @@ export class DashboardComponent implements OnInit {
   public completed: any = [];
   public url = 'https://servermonitoring-89515.firebaseio.com/user.json';
   public taskUrl = 'https://servermonitoring-89515.firebaseio.com/task.json';
+  public commentUrl = 'https://servermonitoring-89515.firebaseio.com/comment.json';
   public userRef: any = [];
+  public commentRef: any = [];
   public userRefNew: any = [];
   public taskRef: any = [];
   public taskAssign: any = [];
@@ -55,6 +59,7 @@ export class DashboardComponent implements OnInit {
   minDate: any;
   maxDate: any;
   public selectedUser: any;
+  public comment: any;
   dropdownSettings: IDropdownSettings = {};
   dropdownList = [];
   dropdownList1 = [];
@@ -66,6 +71,7 @@ export class DashboardComponent implements OnInit {
   frmdateValidation: any = false;
   todateValidation: any = false;
   image: any;
+  taskId: any;
 
   constructor(private fb: AngularFireDatabase, private auth: AuthService, public modalService: BsModalService, private spinner: NgxSpinnerService,
     private router: Router, private toastr: ToastrService, private http: HttpClient, public firebaseAuth: AngularFireAuth, private route: Router) {
@@ -85,6 +91,7 @@ export class DashboardComponent implements OnInit {
     }
     this.fb.list('user').valueChanges().subscribe(res => {
       this.userRef = res;
+      console.log(this.userRef)
       this.userRefNew = this.userRef.filter(person => person.status === 'active');
     })
   }
@@ -106,7 +113,9 @@ export class DashboardComponent implements OnInit {
     this.fb.list('completed-task').valueChanges().subscribe(res => {
       this.completed = res;
     })
-
+    this.fb.list('comment').valueChanges().subscribe(res => {
+      this.commentRef = res;
+    });
     setTimeout(() => {
       for (let i = 0; i < this.userRef.length; i++) {
         if (this.uid == this.userRef[i].uid) {
@@ -129,7 +138,7 @@ export class DashboardComponent implements OnInit {
       textField: 'item_text',
       selectAllText: 'Select All',
       unSelectAllText: 'UnSelect All',
-      itemsShowLimit: 3,
+      "closeDropDownOnSelection": true,
       allowSearchFilter: true
     };
 
@@ -368,5 +377,37 @@ export class DashboardComponent implements OnInit {
   onValueChanges() {
     this.dateValidation = false;
     this.todateValidation = false;
+  }
+  //******************************************************************Comment function***************************************
+  addComment() {
+    let dt = new Date();
+    let time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
+    let datestring = dt.getDate() + '/' + (dt.getMonth() + 1) + '/' + dt.getFullYear()
+    var Obj = _.find(this.userRef, { uid: this.uid });
+    console.log(Obj);
+    let cmt = {
+      comment: this.comment,
+      time: time,
+      date: datestring,
+      userName: Obj.name,
+      taskId: this.taskId
+    }
+    console.log(cmt)
+    this.commentRef.unshift(cmt);
+    $('#commet').modal('hide');
+    this.http.put(this.commentUrl, this.commentRef).subscribe(res => {
+      this.resetcomment();
+      this.toastr.success('Success', 'Comment added successfully!');
+    })
+  }
+  //******************************************************************Get task id function***************************************
+
+  getTaskId(row) {
+    console.log(row);
+    this.taskId = row.taskId;
+  }
+  //******************************************************************Reset comment function***************************************
+  resetcomment() {
+    $('#commetForm').trigger('reset');
   }
 }
