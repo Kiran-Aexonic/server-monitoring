@@ -262,15 +262,16 @@ export class ManageUserComponent implements OnInit {
     };
     console.log(this.userRef[this.editIndex])
     $('#editUser').modal('hide');
-    // this.http.put(this.url, this.userRef).subscribe(res => {
-    // })
-    // this.auth.changePassword(this.userNameE, this.passwordE, this.passwordNew)
-    // $('#editUserForm').trigger('reset');
-    // setTimeout(() => {
-    //   this.spinner.hide();
-    //   this.imgE = '';
-    //   location.reload();
-    // }, 2000);
+    this.http.put(this.url, this.userRef).subscribe(res => {
+      this.toastr.success('Success', 'User edit successfully!');
+    })
+    this.auth.changePassword(this.userNameE, this.passwordE, this.passwordNew)
+    $('#editUserForm').trigger('reset');
+    setTimeout(() => {
+      this.spinner.hide();
+      this.imgE = '';
+      // location.reload();
+    }, 2000);
   }
   //****************************************************************** Reset form function***************************************
   resetForm() {

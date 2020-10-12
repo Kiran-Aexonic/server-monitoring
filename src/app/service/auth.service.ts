@@ -73,7 +73,7 @@ export class AuthService {
       .signInWithEmailAndPassword(email, oldPassword)
       .then((user) => {
         firebase.auth().currentUser.updatePassword(newPassword).then(() => {
-          this.toastr.success('Success', 'User updated successfully!');
+          // this.toastr.success('Success', 'User updated successfully!');
           this.NgxSpinnerService.hide();
         }).catch((err) => {
           console.log(err);
