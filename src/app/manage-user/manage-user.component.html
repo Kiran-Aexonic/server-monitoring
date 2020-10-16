@@ -51,7 +51,8 @@
                                 <td class="text-capitalize pt-3"><img [src]="row.img" *ngIf="row.img != undefined"
                                         class="rounded-circle" height="40" width="40"> <img
                                         src="../../assets/img/user.png" class="rounded-circle"
-                                        *ngIf="row.img == undefined" height="40" width="40" alt=""><span> &nbsp;
+                                        *ngIf="row.img == undefined  || row.img == '' " height="40" width="40"
+                                        alt=""><span> &nbsp;
                                         &nbsp;</span>{{row.name}}</td>
                                 <td class="pt-3">{{row.email}}</td>
                                 <td class="text-capitalize pt-3 text-center pointer" data-toggle="modal"
@@ -104,7 +105,7 @@
 
                     <div class="form-group" data-validate="Enter email">
                         <input type="text" name="userName" [(ngModel)]="userName" placeholder="Email"
-                            pattern="^[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" class="form-control w-75 m-auto"
+                            pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" class="form-control w-75 m-auto"
                             autocomplete="new-password" #email="ngModel" required>
                         <span *ngIf="email.errors && (email.invalid && email.touched)">
                             <p class="text-danger pad-l" *ngIf="email.errors.required">Email is
@@ -175,7 +176,7 @@
 
                     <div class="form-group" data-validate="Enter email">
                         <input type="text" name="userNameE" [(ngModel)]="userNameE" placeholder="Email"
-                            pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,4}$" class="form-control w-75 m-auto"
+                            pattern="^[a-z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,4}$" class="form-control w-75 m-auto"
                             autocomplete="new-password" #emailE="ngModel" disabled>
                         <span *ngIf="emailE.errors && (emailE.invalid && emailE.touched)">
                             <p class="text-danger pad-l" *ngIf="emailE.errors.required">Email is
@@ -187,10 +188,11 @@
                     <div class="form-group" data-validate="Enter old password">
                         <input type="password" name="passo" [(ngModel)]="passwordOld" class="form-control w-75 m-auto"
                             placeholder="Old Password" autocomplete="new-password" #passE="ngModel" minlength="6"
-                            (change)="check()">
+                            (change)="check()" (keyup)=hiderr()>
                         <span *ngIf="passE.invalid && (passE.dirty || passE.touched)">
                         </span>
                         <p class="text-danger  pad-l" id="error" style="display: none;">Password doesn't match</p>
+                        <p class="text-danger  pad-l" id="erroradd" style="display: none;">Please enter old password</p>
                     </div>
                     <div class="form-group" data-validate="Enter new password">
                         <input type="password" name="passn" [(ngModel)]="passwordNew" class="form-control w-75 m-auto"

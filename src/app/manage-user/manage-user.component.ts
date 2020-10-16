@@ -95,7 +95,7 @@ export class ManageUserComponent implements OnInit {
     this.profileName = x.email;
     this.fb.list('user').valueChanges().subscribe(res => {
       this.userRef = res;
-      console.log(this.userRef[1].img)
+      console.log(this.userRef)
     })
     setTimeout(() => {
       this.spinner.hide();
@@ -165,10 +165,11 @@ export class ManageUserComponent implements OnInit {
           uid: this.userid,
           user: res,
           gender: this.gender,
-          img: this.fb1,
+          img: this.fb1 == '' ? undefined : this.fb1,
           status: "active"
         };
         this.resetUser();
+        this.fb1 = '';
         $('#exampleModal').modal('hide');
         this.userRef.unshift(obj);
         this.http.put(this.url, this.userRef).subscribe(res => {
@@ -284,14 +285,25 @@ export class ManageUserComponent implements OnInit {
   compare() {
     if (this.passwordNew != this.passwordConf) {
       $('#error1').show();
+      this.enableEdit = true;
       return false;
     }
     else {
       $('#error1').hide();
+      $('#erroradd').hide();
       this.enableEdit = false;
+    }
+    if (this.passwordOld == undefined || this.passwordOld == '') {
+      $('#erroradd').show();
+      this.enableEdit = true;
+      return false;
     }
   }
   //****************************************************************** Check password function***************************************
+  hiderr() {
+    $('#erroradd').hide();
+
+  }
   check() {
     this.enableEdit = true;
     if (this.passwordOld != this.passwordE) {
@@ -301,6 +313,8 @@ export class ManageUserComponent implements OnInit {
     }
     else {
       $('#error').hide();
+      this.enableEdit = false;
+
     }
   }
 }
